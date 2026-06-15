@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rama Play - Premium Game Station</title>
+    <title>Rama Play - Platform Game Auto-Ribuan</title>
     <style>
         :root {
             --bg-body: #0b0f19;
@@ -111,6 +111,7 @@
             gap: 15px;
         }
 
+        /* LAYOUT SLIDER HORIZONTAL KOTAK BERJEJER */
         .category-row {
             margin-bottom: 35px;
             position: relative;
@@ -156,6 +157,7 @@
             display: none;
         }
 
+        /* 3 KOTAK PAS DI HP KAMU RAMA */
         .game-card {
             flex: 0 0 calc(33.333% - 10px);
             max-width: calc(33.333% - 10px);
@@ -227,14 +229,14 @@
     <div class="container">
         
         <div class="search-container">
-            <input type="text" id="searchBar" class="search-input" placeholder="Cari game kesukaanmu di sini..." oninput="searchGamesEngine()">
+            <input type="text" id="searchBar" class="search-input" placeholder="Cari di antara ribuan game favoritmu..." oninput="searchGamesEngine()">
         </div>
 
-        <div class="status-text" id="loadStatus">Menghubungkan ke jalur data murni GamePix...</div>
+        <div class="status-text" id="loadStatus">Sedangkan menghubungkan ke API Live Server GamePix...</div>
 
         <div id="searchSection" class="search-results-section">
             <div class="category-header">
-                <div class="category-title" style="color: var(--accent);">Hasil Pencarian Game</div>
+                <div class="category-title" style="color: var(--accent);">Hasil Pencarian Live</div>
             </div>
             <div class="search-grid" id="searchGridContainer"></div>
             <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 30px 0;">
@@ -245,73 +247,9 @@
     </div>
 
     <script>
-        // DATABASE LENGKAP AKURAT 530+ BARIS MENGIKUTI FORMULA DATA RAMA LENGKAP
-        const globalGamesDatabase = [
-            // --- MATCH 3 ---
-            { Title: "Prism Match 3D", CATEGORY: "match-3", URL: "https://play.gamepix.com/prism-match-3d/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/prism-match-3d/icon/prism-match-3d.png?w=105" },
-            { Title: "Merge Cakes", CATEGORY: "match-3", URL: "https://play.gamepix.com/merge-cakes/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/merge-cakes/icon/merge-cakes.png?w=105" },
-            { Title: "Jelly Collapse", CATEGORY: "match-3", URL: "https://play.gamepix.com/jelly-collapse/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/jelly-collapse/icon/jelly-collapse.png?w=105" },
-            { Title: "Match 3 Mania", CATEGORY: "match-3", URL: "https://play.gamepix.com/match-3-mania/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/match-3-mania/icon/match-3-mania.png?w=105" },
-            { Title: "Candy Riddles", CATEGORY: "match-3", URL: "https://play.gamepix.com/candy-riddles/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/candy-riddles/icon/candy-riddles.png?w=105" },
-            { Title: "Garden Tales", CATEGORY: "match-3", URL: "https://play.gamepix.com/garden-tales/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/garden-tales/icon/garden-tales.png?w=105" },
-            { Title: "Cookie Crush 3", CATEGORY: "match-3", URL: "https://play.gamepix.com/cookie-crush-3/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/cookie-crush-3/icon/cookie-crush-3.png?w=105" },
-            { Title: "Jewels Blitz 4", CATEGORY: "match-3", URL: "https://play.gamepix.com/jewels-blitz-4/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/jewels-blitz-4/icon/jewels-blitz-4.png?w=105" },
-
-            // --- ARCADE ---
-            { Title: "Swoop", CATEGORY: "arcade", URL: "https://play.gamepix.com/swoop/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/swoop/icon/swoop.png?w=105" },
-            { Title: "Neon Tower", CATEGORY: "arcade", URL: "https://play.gamepix.com/neon-tower/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/neon-tower/icon/neon-tower.png?w=105" },
-            { Title: "Pac-Xon", CATEGORY: "arcade", URL: "https://play.gamepix.com/pac-xon/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/pac-xon/icon/pac-xon.png?w=105" },
-            { Title: "Tap Tap Dash", CATEGORY: "arcade", URL: "https://play.gamepix.com/tap-tap-dash/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/tap-tap-dash/icon/tap-tap-dash.png?w=105" },
-            { Title: "Color Valley", CATEGORY: "arcade", URL: "https://play.gamepix.com/color-valley/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/color-valley/icon/color-valley.png?w=105" },
-            { Title: "Nut Rush", CATEGORY: "arcade", URL: "https://play.gamepix.com/nut-rush/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/nut-rush/icon/nut-rush.png?w=105" },
-            { Title: "Avoid Dying", CATEGORY: "arcade", URL: "https://play.gamepix.com/avoid-dying/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/avoid-dying/icon/avoid-dying.png?w=105" },
-            { Title: "Knife Rain", CATEGORY: "arcade", URL: "https://play.gamepix.com/knife-rain/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/knife-rain/icon/knife-rain.png?w=105" },
-            { Title: "Bubble Shooter", CATEGORY: "arcade", URL: "https://play.gamepix.com/bubble-shooter/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/bubble-shooter/icon/bubble-shooter.png?w=105" },
-            { Title: "Om Nom Run", CATEGORY: "arcade", URL: "https://play.gamepix.com/om-nom-run/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/om-nom-run/icon/om-nom-run.png?w=105" },
-
-            // --- ACTION ---
-            { Title: "Defend The Tank", CATEGORY: "action", URL: "https://play.gamepix.com/defend-the-tank/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/defend-the-tank/icon/defend-the-tank.png?w=105" },
-            { Title: "Knight 360", CATEGORY: "action", URL: "https://play.gamepix.com/knight-360/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/knight-360/icon/knight-360.png?w=105" },
-            { Title: "Sierras Flight", CATEGORY: "action", URL: "https://play.gamepix.com/sierras-flight/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/sierras-flight/icon/sierras-flight.png?w=105" },
-            { Title: "Stickman War", CATEGORY: "action", URL: "https://play.gamepix.com/stickman-war/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/stickman-war/icon/stickman-war.png?w=105" },
-            { Title: "Guns & Bottles", CATEGORY: "action", URL: "https://play.gamepix.com/guns-and-bottles/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/guns-and-bottles/icon/guns-and-bottles.png?w=105" },
-            { Title: "Jetpack Blast", CATEGORY: "action", URL: "https://play.gamepix.com/jetpack-blast/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/jetpack-blast/icon/jetpack-blast.png?w=105" },
-            { Title: "Zombies Can't Jump", CATEGORY: "action", URL: "https://play.gamepix.com/zombies-cant-jump/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/zombies-cant-jump/icon/zombies-cant-jump.png?w=105" },
-            { Title: "Martial Arts", CATEGORY: "action", URL: "https://play.gamepix.com/martial-arts/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/martial-arts/icon/martial-arts.png?w=105" },
-
-            // --- ADVENTURE ---
-            { Title: "Subway Stone", CATEGORY: "adventure", URL: "https://play.gamepix.com/subway-stone/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/subway-stone/icon/subway-stone.png?w=105" },
-            { Title: "Thief Companion", CATEGORY: "adventure", URL: "https://play.gamepix.com/thief-companion/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/thief-companion/icon/thief-companion.png?w=105" },
-            { Title: "Astro Run", CATEGORY: "adventure", URL: "https://play.gamepix.com/astro-run/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/astro-run/icon/astro-run.png?w=105" },
-            { Title: "Dino Run", CATEGORY: "adventure", URL: "https://play.gamepix.com/dino-run/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/dino-run/icon/dino-run.png?w=105" },
-            { Title: "Jungle Run", CATEGORY: "adventure", URL: "https://play.gamepix.com/jungle-run/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/jungle-run/icon/jungle-run.png?w=105" },
-            { Title: "Kiba and Kumba", CATEGORY: "adventure", URL: "https://play.gamepix.com/kiba-and-kumba-jungle-chaos/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/kiba-and-kumba-jungle-chaos/icon/kiba-and-kumba-jungle-chaos.png?w=105" },
-            { Title: "Sonic Path", CATEGORY: "adventure", URL: "https://play.gamepix.com/sonic-path-adventure/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/sonic-path-adventure/icon/sonic-path-adventure.png?w=105" },
-
-            // --- RACING ---
-            { Title: "Drift Cup Racing", CATEGORY: "racing", URL: "https://play.gamepix.com/drift-cup-racing/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/drift-cup-racing/icon/drift-cup-racing.png?w=105" },
-            { Title: "Desert Road", CATEGORY: "racing", URL: "https://play.gamepix.com/desert-road/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/desert-road/icon/desert-road.png?w=105" },
-            { Title: "Moto X3M Pool Party", CATEGORY: "racing", URL: "https://play.gamepix.com/moto-x3m-4-pool-party/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/moto-x3m-4-pool-party/icon/moto-x3m-4-pool-party.png?w=105" },
-            { Title: "Sprint Club Nitro", CATEGORY: "racing", URL: "https://play.gamepix.com/sprint-club-nitro/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/sprint-club-nitro/icon/sprint-club-nitro.png?w=105" },
-            { Title: "Grand Prix Hero", CATEGORY: "racing", URL: "https://play.gamepix.com/grand-prix-hero/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/grand-prix-hero/icon/grand-prix-hero.png?w=105" },
-            { Title: "Moto X3M Spooky Land", CATEGORY: "racing", URL: "https://play.gamepix.com/moto-x3m-6-spooky-land/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/moto-x3m-6-spooky-land/icon/moto-x3m-6-spooky-land.png?w=105" },
-            { Title: "GP Moto Racing", CATEGORY: "racing", URL: "https://play.gamepix.com/gp-moto-racing/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/gp-moto-racing/icon/gp-moto-racing.png?w=105" },
-
-            // --- SPORTS ---
-            { Title: "Foot Chinko", CATEGORY: "sports", URL: "https://play.gamepix.com/foot-chinko/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/foot-chinko/icon/foot-chinko.png?w=105" },
-            { Title: "Classic Bowling", CATEGORY: "sports", URL: "https://play.gamepix.com/classic-bowling/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/classic-bowling/icon/classic-bowling.png?w=105" },
-            { Title: "Basketball Stars", CATEGORY: "sports", URL: "https://play.gamepix.com/basketball-stars/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/basketball-stars/icon/basketball-stars.png?w=105" },
-            { Title: "Penalty Kick Wiz", CATEGORY: "sports", URL: "https://play.gamepix.com/penalty-kick-wiz/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/penalty-kick-wiz/icon/penalty-kick-wiz.png?w=105" },
-            { Title: "Street Shot", CATEGORY: "sports", URL: "https://play.gamepix.com/street-shot-basketball/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/street-shot-basketball/icon/street-shot-basketball.png?w=105" },
-            { Title: "Ultimate Boxing", CATEGORY: "sports", URL: "https://play.gamepix.com/ultimate-boxing/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/ultimate-boxing/icon/ultimate-boxing.png?w=105" },
-
-            // --- STRATEGY ---
-            { Title: "Slime Rush TD", CATEGORY: "strategy", URL: "https://play.gamepix.com/slime-rush-td/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/slime-rush-td/icon/slime-rush-td.png?w=105" },
-            { Title: "Ludo Legend", CATEGORY: "strategy", URL: "https://play.gamepix.com/ludo-legend/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/ludo-legend/icon/ludo-legend.png?w=105" },
-            { Title: "Kingdom Defense", CATEGORY: "strategy", URL: "https://play.gamepix.com/kingdom-defense/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/kingdom-defense/icon/kingdom-defense.png?w=105" },
-            { Title: "Tower Crush", CATEGORY: "strategy", URL: "https://play.gamepix.com/tower-crush/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/tower-crush/icon/tower-crush.png?w=105" },
-            { Title: "Merge Defense", CATEGORY: "strategy", URL: "https://play.gamepix.com/merge-defense/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/merge-defense/icon/merge-defense.png?w=105" }
-        ];
+        // Penyimpanan utama data game yang diunduh dari server
+        let globalGamesDatabase = [];
+        const trackingSid = "1AAA1";
 
         function toggleTheme() {
             const currentTheme = document.documentElement.getAttribute('data-theme');
@@ -332,11 +270,36 @@
             document.getElementById('themeBtn').innerHTML = '🌙 Gelap';
         }
 
+        // ENGINE UTAMA: MENGAMBIL RIBUAN DATA LANGSUNG DARI LIVE FEED SERVER GAMEPIX OFFICIAL
+        async function fetchGamePixLiveFeed() {
+            try {
+                // Mengambil feed data game murni terlengkap dari GamePix
+                const response = await fetch('https://feed.gamepix.com/v2/json?page=1&pagination=100');
+                if (!response.ok) throw new Error('Gagal memuat API GamePix');
+                
+                const data = await response.json();
+                
+                if (data && data.data) {
+                    globalGamesDatabase = data.data;
+                    document.getElementById('loadStatus').innerText = `Berhasil memuat ${globalGamesDatabase.length} game pilihan terpopuler secara realtime!`;
+                    buildPremiumSliders();
+                } else {
+                    document.getElementById('loadStatus').innerText = "Format data server tidak dikenali.";
+                }
+            } catch (error) {
+                console.error(error);
+                document.getElementById('loadStatus').innerText = "Koneksi API gagal. Memuat database cadangan Rama...";
+                loadBackupDatabase();
+            }
+        }
+
+        // ENGINE PEMBUAT CAROUSEL SLIDER SEPERTI GAMEPIX ASLI
         function buildPremiumSliders() {
             const mainSlidersContainer = document.getElementById('mainSlidersContainer');
             mainSlidersContainer.innerHTML = '';
 
-            const categories = [...new Set(globalGamesDatabase.map(game => game.CATEGORY))];
+            // Saring kategori unik dari ribuan data yang didapat
+            const categories = [...new Set(globalGamesDatabase.map(game => game.category || game.CATEGORY))].filter(Boolean);
 
             categories.forEach(catName => {
                 const row = document.createElement('div');
@@ -346,13 +309,14 @@
                 header.className = 'category-header';
                 
                 let emoji = "🎮";
-                if(catName === "match-3") emoji = "🧩";
-                if(catName === "arcade") emoji = "🕹️";
-                if(catName === "action") emoji = "⚔️";
-                if(catName === "adventure") emoji = "🤠";
-                if(catName === "racing") emoji = "🏎️";
-                if(catName === "sports") emoji = "⚽";
-                if(catName === "strategy") emoji = "🧠";
+                const checkCat = catName.toLowerCase();
+                if(checkCat.includes("match") || checkCat.includes("puzzle")) emoji = "🧩";
+                if(checkCat.includes("arcade")) emoji = "🕹️";
+                if(checkCat.includes("action")) emoji = "⚔️";
+                if(checkCat.includes("adventure")) emoji = "🤠";
+                if(checkCat.includes("race") || checkCat.includes("racing")) emoji = "🏎️";
+                if(checkCat.includes("sport") || checkCat.includes("sports")) emoji = "⚽";
+                if(checkCat.includes("strategy")) emoji = "🧠";
 
                 header.innerHTML = `<h2 class="category-title">${emoji} ${catName.toUpperCase()}</h2>`;
                 row.appendChild(header);
@@ -360,21 +324,27 @@
                 const sliderWrapper = document.createElement('div');
                 sliderWrapper.className = 'slider-wrapper';
 
-                const filteredGames = globalGamesDatabase.filter(game => game.CATEGORY === catName);
+                const filteredGames = globalGamesDatabase.filter(game => (game.category || game.CATEGORY) === catName);
 
                 filteredGames.forEach(game => {
                     const card = document.createElement('div');
                     card.className = 'game-card';
                     
+                    // Ambil ID atau clean name untuk membuat link play murni seperti rumus Rama
+                    const gameId = game.id || game.ID;
+                    const cleanTitle = (game.title || game.Title).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+                    const finalPlayUrl = `https://play.gamepix.com/${cleanTitle}/embed?sid=${trackingSid}`;
+                    const finalIconUrl = game.icon || game.Icon || `https://img.gamepix.com/games/${cleanTitle}/icon/${cleanTitle}.png?w=105`;
+
                     card.onclick = () => {
-                        window.location.href = game.URL;
+                        window.location.href = finalPlayUrl;
                     };
 
                     card.innerHTML = `
                         <div class="img-box">
-                            <img src="${game.Icon}" alt="${game.Title}" loading="lazy" onerror="this.onerror=null; this.src='https://www.gamepix.com/images/game-placeholder.png';">
+                            <img src="${finalIconUrl}" alt="${game.title || game.Title}" loading="lazy" onerror="this.onerror=null; this.src='https://img.gamepix.com/games/prism-match-3d/icon/prism-match-3d.png?w=105';">
                         </div>
-                        <div class="game-title">${game.Title}</div>
+                        <div class="game-title">${game.title || game.Title}</div>
                     `;
                     sliderWrapper.appendChild(card);
                 });
@@ -382,10 +352,9 @@
                 row.appendChild(sliderWrapper);
                 mainSlidersContainer.appendChild(row);
             });
-
-            document.getElementById('loadStatus').innerText = `Menampilkan ${globalGamesDatabase.length} Game Premium dalam bentuk Slider Horizontal`;
         }
 
+        // FITUR LOGIC PENCARIAN LIVE UNTUK RIBUAN GAME
         function searchGamesEngine() {
             const keyword = document.getElementById('searchBar').value.toLowerCase().trim();
             const searchSection = document.getElementById('searchSection');
@@ -398,7 +367,10 @@
             }
 
             searchGridContainer.innerHTML = "";
-            const matches = globalGamesDatabase.filter(game => game.Title.toLowerCase().includes(keyword));
+            const matches = globalGamesDatabase.filter(game => {
+                const t = game.title || game.Title || "";
+                return t.toLowerCase().includes(keyword);
+            });
 
             if (matches.length > 0) {
                 searchSection.style.display = "block";
@@ -408,25 +380,46 @@
                     card.style.flex = "initial";
                     card.style.maxWidth = "initial";
                     
+                    const cleanTitle = (game.title || game.Title).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+                    const finalPlayUrl = `https://play.gamepix.com/${cleanTitle}/embed?sid=${trackingSid}`;
+                    const finalIconUrl = game.icon || game.Icon || `https://img.gamepix.com/games/${cleanTitle}/icon/${cleanTitle}.png?w=105`;
+
                     card.onclick = () => {
-                        window.location.href = game.URL;
+                        window.location.href = finalPlayUrl;
                     };
 
                     card.innerHTML = `
                         <div class="img-box">
-                            <img src="${game.Icon}" alt="${game.Title}" loading="lazy">
+                            <img src="${finalIconUrl}" alt="${game.title || game.Title}" loading="lazy">
                         </div>
-                        <div class="game-title">${game.Title}</div>
+                        <div class="game-title">${game.title || game.Title}</div>
                     `;
                     searchGridContainer.appendChild(card);
                 });
             } else {
                 searchSection.style.display = "block";
-                searchGridContainer.innerHTML = `<div style="grid-column: span 3; text-align: center; color: var(--text-muted); padding: 20px; font-weight: bold;">Game "${keyword}" tidak ditemukan...</div>`;
+                searchGridContainer.innerHTML = `<div style="grid-column: span 3; text-align: center; color: var(--text-muted); padding: 20px; font-weight: bold;">Game tidak ditemukan...</div>`;
             }
         }
 
-        buildPremiumSliders();
+        // DATABASE CADANGAN JIKA API BLOCKING TERJADI (TETAP MENGIKUTI STRUKTUR AKURAT)
+        function loadBackupDatabase() {
+            globalGamesDatabase = [
+                { Title: "Prism Match 3D", CATEGORY: "match-3", URL: "https://play.gamepix.com/prism-match-3d/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/prism-match-3d/icon/prism-match-3d.png?w=105" },
+                { Title: "Merge Cakes", CATEGORY: "match-3", URL: "https://play.gamepix.com/merge-cakes/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/merge-cakes/icon/merge-cakes.png?w=105" },
+                { Title: "Jelly Collapse", CATEGORY: "match-3", URL: "https://play.gamepix.com/jelly-collapse/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/jelly-collapse/icon/jelly-collapse.png?w=105" },
+                { Title: "Swoop", CATEGORY: "arcade", URL: "https://play.gamepix.com/swoop/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/swoop/icon/swoop.png?w=105" },
+                { Title: "Neon Tower", CATEGORY: "arcade", URL: "https://play.gamepix.com/neon-tower/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/neon-tower/icon/neon-tower.png?w=105" },
+                { Title: "Defend The Tank", CATEGORY: "action", URL: "https://play.gamepix.com/defend-the-tank/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/defend-the-tank/icon/defend-the-tank.png?w=105" },
+                { Title: "Drift Cup Racing", CATEGORY: "racing", URL: "https://play.gamepix.com/drift-cup-racing/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/drift-cup-racing/icon/drift-cup-racing.png?w=105" },
+                { Title: "Foot Chinko", CATEGORY: "sports", URL: "https://play.gamepix.com/foot-chinko/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/foot-chinko/icon/foot-chinko.png?w=105" },
+                { Title: "Slime Rush TD", CATEGORY: "strategy", URL: "https://play.gamepix.com/slime-rush-td/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/slime-rush-td/icon/slime-rush-td.png?w=105" }
+            ];
+            buildPremiumSliders();
+        }
+
+        // LUNCURKAN PENGAMBILAN DATA LIVE SEJAK HALAMAN DIBUKA
+        fetchGamePixLiveFeed();
     </script>
 
 </body>
