@@ -5,34 +5,78 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rama Play</title>
     <style>
+        :root {
+            --bg-body: #f4f7f6;
+            --bg-card: #ffffff;
+            --text-main: #1a202c;
+            --text-muted: #718096;
+            --border-color: #edf2f7;
+            --header-shadow: rgba(0,0,0,0.04);
+        }
+
+        /* Variabel Mode Gelap Premium */
+        [data-theme="dark"] {
+            --bg-body: #0f172a;
+            --bg-card: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+            --header-shadow: rgba(0,0,0,0.2);
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             -webkit-tap-highlight-color: transparent;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
         }
 
-        /* Desain Latar Belakang Bersih & Premium ala GamePix */
         body {
-            background: #f4f7f6;
-            color: #1a202c;
+            background-color: var(--bg-body);
+            color: var(--text-main);
             padding-bottom: 60px;
             min-height: 100vh;
         }
 
-        /* Header Utama */
+        /* Header Utama dengan Tombol Mode Gelap */
         .main-header {
-            background: #ffffff;
-            padding: 15px;
-            text-align: center;
-            font-size: 24px;
-            font-weight: 800;
-            color: #00a3e0;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+            background-color: var(--bg-card);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px var(--header-shadow);
             position: sticky;
             top: 0;
             z-index: 100;
+        }
+
+        .header-logo {
+            font-size: 22px;
+            font-weight: 800;
+            color: #00a3e0;
+        }
+
+        /* Tombol Mode Gelap Bulat Lembut di Pojok Kanan Atas */
+        .theme-toggle-btn {
+            background: #00a3e0;
+            color: #ffffff;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 4px 10px rgba(0, 163, 224, 0.2);
+        }
+
+        .theme-toggle-btn:hover {
+            background: #008cc2;
         }
 
         .container {
@@ -41,7 +85,7 @@
             padding: 15px;
         }
 
-        /* Kolom Pencarian Bersih Tanpa Garis Tebal */
+        /* Kolom Cari Minimalis */
         .search-container {
             margin: 15px 0;
         }
@@ -49,22 +93,22 @@
         .search-input {
             width: 100%;
             padding: 14px 20px;
-            border: 1px solid #e2e8f0;
+            border: 1px solid var(--border-color);
             border-radius: 12px;
             font-size: 15px;
             font-weight: 600;
             outline: none;
-            background: #ffffff;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
-            transition: all 0.2s;
+            background-color: var(--bg-card);
+            color: var(--text-main);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.01);
         }
 
         .search-input:focus {
             border-color: #00a3e0;
-            box-shadow: 0 4px 12px rgba(0, 163, 224, 0.1);
+            box-shadow: 0 0 0 3px rgba(0, 163, 224, 0.15);
         }
 
-        /* Menu Kategori Geser Horizontal Luas */
+        /* Menu Kategori Geser ala GamePix */
         .category-scroll {
             display: flex;
             gap: 10px;
@@ -78,20 +122,20 @@
         }
 
         .category-item {
-            background: #ffffff;
-            color: #4a5568;
-            padding: 10px 20px;
+            background-color: var(--bg-card);
+            color: var(--text-muted);
+            padding: 10px 18px;
             border-radius: 10px;
-            font-size: 14px;
+            font-size: 13.5px;
             font-weight: 700;
-            border: 1px solid #e2e8f0;
+            border: 1px solid var(--border-color);
             cursor: pointer;
             white-space: nowrap;
-            transition: all 0.2s;
         }
 
         .category-item:hover {
-            background: #edf2f7;
+            border-color: #00a3e0;
+            color: #00a3e0;
         }
 
         .category-item.active {
@@ -104,11 +148,11 @@
         .status-text {
             font-size: 14px;
             font-weight: 700;
-            color: #718096;
+            color: var(--text-muted);
             margin: 10px 0 20px 5px;
         }
 
-        /* Grid Game Bersih Menyatu dengan Background - BEBAS GARIS TEPI */
+        /* Grid Game Bersih Menyatu Tanpa Garis Tepi Tebal */
         .games-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -122,25 +166,25 @@
             .games-grid { grid-template-columns: repeat(6, 1fr); }
         }
 
-        /* Card Game Minimalis Modern */
+        /* Card Game Modern Premium */
         .game-card {
-            background: #ffffff;
+            background-color: var(--bg-card);
             border-radius: 16px;
             overflow: hidden;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.02);
             padding: 8px;
             text-decoration: none;
-            color: inherit;
+            color: var(--text-main);
             display: flex;
             flex-direction: column;
-            transition: transform 0.2s, box-shadow 0.2s;
-            border: 1px solid #edf2f7;
+            border: 1px solid var(--border-color);
             cursor: pointer;
         }
 
         .game-card:hover {
             transform: translateY(-4px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.06);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+            border-color: #00a3e0;
         }
 
         .img-box {
@@ -165,7 +209,6 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            color: #2d3748;
         }
 
         .loader {
@@ -179,7 +222,10 @@
 </head>
 <body>
 
-    <div class="main-header">🎮 Rama Play</div>
+    <div class="main-header">
+        <div class="header-logo">🎮 Rama Play</div>
+        <button class="theme-toggle-btn" onclick="toggleTheme()" id="themeBtn">🌙 Gelap</button>
+    </div>
 
     <div class="container">
         
@@ -188,46 +234,69 @@
         </div>
 
         <div class="category-scroll">
-            <button class="category-item active" onclick="changeCategory('semua', this)">Semua Game</button>
-            <button class="category-item" onclick="changeCategory('arkade', this)">🕹️ Arkade</button>
-            <button class="category-item" onclick="changeCategory('aksi', this)">⚔️ Aksi</button>
-            <button class="category-item" onclick="changeCategory('petualangan', this)">🤠 Petualangan</button>
+            <button class="category-item active" onclick="changeCategory('all', this)">Semua Game</button>
+            <button class="category-item" onclick="changeCategory('arcade', this)">🕹️ Arkade</button>
+            <button class="category-item" onclick="changeCategory('action', this)">⚔️ Aksi</button>
+            <button class="category-item" onclick="changeCategory('adventure', this)">🤠 Petualangan</button>
             <button class="category-item" onclick="changeCategory('puzzle', this)">🧩 Puzzle</button>
-            <button class="category-item" onclick="changeCategory('balapan', this)">🏎️ Balapan</button>
-            <button class="category-item" onclick="changeCategory('olahraga', this)">⚽ Olahraga</button>
-            <button class="category-item" onclick="changeCategory('strategi', this)">🧠 Strategi</button>
-            <button class="category-item" onclick="changeCategory('perempuan', this)">👑 Perempuan</button>
-            <button class="category-item" onclick="changeCategory('multiplayer', this)">👥 Multiplayer</button>
+            <button class="category-item" onclick="changeCategory('racing', this)">🏎️ Balapan</button>
+            <button class="category-item" onclick="changeCategory('sports', this)">⚽ Olahraga</button>
+            <button class="category-item" onclick="changeCategory('strategy', this)">🧠 Strategi</button>
+            <button class="category-item" onclick="changeCategory('girls', this)">👑 Perempuan</button>
         </div>
 
         <div class="status-text" id="loadStatus">Menghubungkan ke GamePix...</div>
         
         <div class="games-grid" id="gamesContainer"></div>
-        <div id="loadingIndicator" class="loader">Memuat data...</div>
+        <div id="loadingIndicator" class="loader">Membuat sambungan aman...</div>
 
     </div>
 
     <script>
-        let currentActiveCategory = 'semua';
+        let currentActiveCategory = 'all';
         let databaseGames = [];
 
-        // FUNGSI UTAMA: Membaca struktur variabel bahasa Indonesia dari feed asli milikmu
+        // MODE GELAP LOGIKA
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const btn = document.getElementById('themeBtn');
+            
+            if (currentTheme === 'dark') {
+                document.documentElement.removeAttribute('data-theme');
+                btn.innerHTML = '🌙 Gelap';
+                localStorage.setItem('theme', 'light');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                btn.innerHTML = '☀️ Terang';
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        // Cek tema simpanan saat halaman pertama dimuat
+        if (localStorage.getItem('theme') === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            document.getElementById('themeBtn').innerHTML = '☀️ Terang';
+        }
+
+        // AMBIL DATA GAME (Sistem Pembaca Variabel English Baku + Jembatan AllOrigins Stabil)
         async function loadGamePixFeed() {
             document.getElementById('loadingIndicator').style.display = 'block';
             
-            // Memakai jembatan corsproxy agar diizinkan lolos masuk ke Vercel tanpa blokir
-            const feedUrl = "https://feeds.gamepix.com/v2/json?sid=1AAA1&pagination=150&page=1";
-            const proxyEndpoint = `https://corsproxy.io/?${encodeURIComponent(feedUrl)}`;
+            const rawFeedUrl = "https://feeds.gamepix.com/v2/json?sid=1AAA1&pagination=120&page=1";
+            const stableProxy = `https://api.allorigins.win/get?url=${encodeURIComponent(rawFeedUrl)}`;
 
             try {
-                const response = await fetch(proxyEndpoint);
-                const jsonResult = await response.json();
+                const response = await fetch(stableProxy);
+                const outerJson = await response.json();
                 
-                // Pembacaan variabel 'items' sesuai isi foto dokumen GamePix kamu
-                let gameItems = jsonResult.items || [];
+                // Mengonversi string kiriman proxy menjadi objek JSON murni
+                const jsonResult = JSON.parse(outerJson.contents);
+                
+                // Membaca data list game asli menggunakan properti 'data' bawaan API global
+                let gameItems = jsonResult.data || [];
 
                 if (gameItems.length === 0) {
-                    document.getElementById('loadStatus').innerText = "Katalog kosong atau SID salah.";
+                    document.getElementById('loadStatus').innerText = "Katalog kosong, silakan periksa SID akun Anda.";
                     document.getElementById('loadingIndicator').style.display = 'none';
                     return;
                 }
@@ -237,7 +306,7 @@
 
             } catch (err) {
                 console.error("Eror membaca API GamePix:", err);
-                document.getElementById('loadStatus').innerText = "Gagal memuat. Silakan muat ulang halaman.";
+                document.getElementById('loadStatus').innerText = "Koneksi sibuk. Silakan segarkan/refresh halaman.";
                 document.getElementById('loadingIndicator').style.display = 'none';
             }
         }
@@ -247,9 +316,9 @@
             container.innerHTML = '';
 
             let filteredList = databaseGames;
-            if (currentActiveCategory !== 'semua') {
+            if (currentActiveCategory !== 'all') {
                 filteredList = databaseGames.filter(game => {
-                    const gameCat = game.kategori ? game.kategori.toLowerCase() : '';
+                    const gameCat = game.category ? game.category.toLowerCase() : '';
                     return gameCat === currentActiveCategory;
                 });
             }
@@ -266,16 +335,16 @@
                 const card = document.createElement('div');
                 card.className = "game-card";
                 card.style.display = 'flex';
-                card.setAttribute('data-name', game.judul ? game.judul.toLowerCase() : '');
+                card.setAttribute('data-name', game.title ? game.title.toLowerCase() : '');
                 
-                // Membuka link menggunakan variabel 'URL' (Huruf Besar) hasil dokumentasi GamePix
+                // Membuka tautan langsung menggunakan parameter properti 'url' bawaan GamePix
                 card.onclick = () => { 
-                    if(game.URL) { window.location.href = game.URL; }
+                    if(game.url) { window.location.href = game.url; }
                 };
 
-                // Menampilkan gambar menggunakan variabel 'gambar' hasil dokumentasi GamePix
-                const imageSource = game.gambar || game.banner_image || 'https://via.placeholder.com/150';
-                const gameTitleText = game.judul || 'Game Seru';
+                // Membaca gambar menggunakan properti 'thumbnailUrl' bawaan GamePix global
+                const imageSource = game.thumbnailUrl || 'https://via.placeholder.com/150';
+                const gameTitleText = game.title || 'Game Seru';
 
                 card.innerHTML = `
                     <div class="img-box">
@@ -287,7 +356,7 @@
             });
 
             const totalVisible = document.querySelectorAll('.game-card[style*="display: flex"]').length;
-            document.getElementById('loadStatus').innerText = `Menampilkan ${totalVisible} permainan dari GamePix`;
+            document.getElementById('loadStatus').innerText = `Menampilkan ${totalVisible} game seru untuk dimainkan`;
         }
 
         function searchGames() {
@@ -300,7 +369,7 @@
             });
             
             const totalVisible = document.querySelectorAll('.game-card[style*="display: flex"]').length;
-            document.getElementById('loadStatus').innerText = `Ditemukan ${totalVisible} game cocok`;
+            document.getElementById('loadStatus').innerText = `Ditemukan ${totalVisible} game yang cocok`;
         }
 
         function changeCategory(categoryName, element) {
@@ -312,7 +381,7 @@
             displayFilteredGames();
         }
 
-        // Eksekusi otomatis saat web terbuka
+        // Jalankan mesin pembaca feed otomatis saat halaman terbuka
         loadGamePixFeed();
     </script>
 
