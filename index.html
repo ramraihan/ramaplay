@@ -23,10 +23,10 @@
             scroll-behavior: smooth;
         }
 
-        /* Header dengan nama Rama Play yang menyala */
+        /* Header dengan warna Biru Terang Segar yang menyala */
         .header {
             padding: 25px 15px 15px 15px;
-            font-size: 28px;
+            font-size: 26px;
             font-weight: 900;
             text-align: center;
             color: #00a3e0;
@@ -244,7 +244,7 @@
     <div class="section-container">
         
         <div class="search-category-container">
-            <input type="text" id="searchBox" class="search-box" placeholder="Cari game favoritmu di sini... (Tekan Enter)" onkeydown="checkSearch(event)">
+            <input type="text" id="searchBox" class="search-box" placeholder="Cari game favoritmu di sini..." oninput="filterGames()">
             <div class="category-list">
                 <button class="category-btn active" id="cat-all" onclick="selectCategory('all', this)">Semua</button>
                 <button class="category-btn" id="cat-featured" onclick="selectCategory('featured', this)">⭐ Rekomendasi</button>
@@ -272,19 +272,16 @@
         const gamesPerPage = 40; 
         let isLoading = false;
         let currentCategory = 'all';
-        let currentSearchQuery = '';
         let userLanguage = 'id'; 
 
-        // Kamus otomatis terjemahan bahasa indonesia untuk pencarian langsung ke API pusat
-        const indonesianDictionary = {
-            'rumah': 'house',
-            'memancing': 'fish',
-            'pancing': 'fish',
-            'mobil': 'car',
-            'balap': 'race',
-            'tembak': 'shoot',
-            'masak': 'cook',
-            'kue': 'cake'
+        // Kamus pintar otomatis dari Bahasa Indonesia ke Bahasa Inggris database
+        const dictionary = {
+            'rumah': ['house', 'home', 'room', 'mansion', 'building'],
+            'memancing': ['fish', 'fishing', 'catch'],
+            'pancing': ['fish', 'fishing'],
+            'mobil': ['car', 'race', 'drive'],
+            'tembak': ['shoot', 'gun', 'sniper'],
+            'masak': ['cook', 'cooking', 'chef', 'kitchen', 'cake']
         };
 
         const categoryKeywords = {
@@ -301,7 +298,7 @@
         const translations = {
             id: {
                 header: "🎮 Rama Play",
-                searchPlaceholder: "Cari game favoritmu di sini... (Tekan Enter)",
+                searchPlaceholder: "Cari game favoritmu di sini...",
                 title: "Jelajahi Ribuan Game",
                 loading: "Memuat game lainnya...",
                 loadedAll: "Semua game telah dimuat!",
@@ -312,7 +309,7 @@
             },
             en: {
                 header: "🎮 Rama Play",
-                searchPlaceholder: "Search your favorite game here... (Press Enter)",
+                searchPlaceholder: "Search your favorite game here...",
                 title: "Explore Thousands of Games",
                 loading: "Loading more games...",
                 loadedAll: "All games have been loaded!",
@@ -379,28 +376,18 @@
         }
 
         function updateGameCount() {
-            const visibleCards = document.querySelectorAll('.game-card').length;
+            const visibleCards = document.querySelectorAll('.game-card[style*="display: flex"]').length;
             const textTemplate = translations[userLanguage].counterText;
             document.getElementById('gameCounter').innerText = textTemplate.replace('{count}', visibleCards);
         }
 
-        async function fetchGames(page, isNewLoad = false) {
+        async function fetchGames(page) {
             if (isLoading) return; 
             isLoading = true;
             document.getElementById('loadingStatus').style.display = 'block';
 
             let apiCategory = (currentCategory !== 'all' && currentCategory !== 'featured') ? currentCategory : '';
-            
-            let targetQuery = currentSearchQuery;
-            if (indonesianDictionary[targetQuery]) {
-                targetQuery = indonesianDictionary[targetQuery];
-            }
-
-            let categoryParam = apiCategory ? `&category=${apiCategory}` : '';
-            if (targetQuery) {
-                categoryParam = `&category=${targetQuery}`;
-            }
-
+            let categoryParam = apiCategory !== '' ? `&category=${apiCategory}` : '';
             let currentDomain = window.location.hostname;
             let adPremiumParam = `&gd_sdk_referrer_url=https://${currentDomain}`;
 
@@ -410,19 +397,18 @@
                 const response = await fetch(apiURL);
                 let data = await response.json();
                 
-                if (!data || data.length === 0) {
+                if (data.length === 0) {
                     document.getElementById('loadingStatus').innerText = translations[userLanguage].loadedAll;
                     window.removeEventListener('scroll', handleScroll);
-                    isLoading = false;
                     return;
                 }
 
-                if (currentCategory === 'all' && !targetQuery) {
+                if (currentCategory === 'all') {
                     data = shuffleGames(data);
                 }
 
                 let filteredData = data;
-                if (currentCategory !== 'all' && categoryKeywords[currentCategory] && !targetQuery) {
+                if (currentCategory !== 'all' && categoryKeywords[currentCategory]) {
                     const keywords = categoryKeywords[currentCategory];
                     filteredData = data.filter(game => {
                         const titleLower = game.Title.toLowerCase();
@@ -436,6 +422,12 @@
                 isLoading = false;
                 document.getElementById('loadingStatus').style.display = 'none';
                 updateGameCount();
+
+                if (currentCategory !== 'all' && filteredData.length < 6 && data.length > 0) {
+                    currentPage++;
+                    isLoading = false;
+                    fetchGames(currentPage);
+                }
 
             } catch (error) {
                 console.error("Gagal memuat game:", error);
@@ -451,8 +443,10 @@
             gamesList.forEach(game => {
                 const card = document.createElement('div');
                 card.className = "game-card";
+                card.style.display = 'flex'; 
+                card.setAttribute('data-title', game.Title.toLowerCase());
                 
-                // ANTI LAYAR HITAM RESMI: Langsung membuka halaman game secara penuh agar lolos sensor
+                // PERBAIKAN: Langsung mengalihkan halaman bersih (Anti Layar Hitam + Tetap Cuan)
                 card.onclick = () => {
                     window.location.href = game.Url;
                 };
@@ -475,21 +469,22 @@
             container.appendChild(fragment);
         }
 
-        function checkSearch(event) {
-            if (event.key === 'Enter') {
-                const value = document.getElementById('searchBox').value.toLowerCase().trim();
-                currentSearchQuery = value;
-                currentPage = 1;
-                document.getElementById('gameContainer').innerHTML = '';
-                
-                if(value !== '') {
-                    document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
-                } else {
-                    document.getElementById('cat-all').classList.add('active');
-                }
-
-                fetchGames(currentPage, true);
+        // Fungsi Filter Pencarian Pintar dengan Dukungan Multi-Bahasa Lengkap
+        function filterGames() {
+            const rawKeyword = document.getElementById('searchBox').value.toLowerCase().trim();
+            const cards = document.querySelectorAll('.game-card');
+            
+            let searchKeywords = [rawKeyword];
+            if (dictionary[rawKeyword]) {
+                searchKeywords = searchKeywords.concat(dictionary[rawKeyword]);
             }
+            
+            cards.forEach(card => {
+                const title = card.getAttribute('data-title');
+                const isMatch = searchKeywords.some(kw => title.includes(kw));
+                card.style.display = isMatch ? 'flex' : 'none';
+            });
+            updateGameCount();
         }
 
         function selectCategory(categoryName, element) {
@@ -497,7 +492,6 @@
             element.classList.add('active');
 
             currentCategory = categoryName;
-            currentSearchQuery = '';
             currentPage = 1;
             document.getElementById('gameContainer').innerHTML = '';
             document.getElementById('searchBox').value = ''; 
