@@ -13,7 +13,6 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* Warna Latar: Biru Muda Cerah/Terang Sekali & Putih murni */
         body {
             background: linear-gradient(135px, #d0f4ff 0%, #f0fbe7 50%, #ffffff 100%);
             background-attachment: fixed;
@@ -23,7 +22,6 @@
             scroll-behavior: smooth;
         }
 
-        /* Header dengan warna Biru Terang Segar yang menyala */
         .header {
             padding: 25px 15px 15px 15px;
             font-size: 26px;
@@ -39,7 +37,6 @@
             margin: 0 auto;
         }
 
-        /* Container Fitur Pencarian & Kategori Putih Bersih border Biru Terang */
         .search-category-container {
             background: #ffffff;
             padding: 18px;
@@ -104,7 +101,6 @@
             box-shadow: 0 4px 12px rgba(0, 163, 224, 0.3);
         }
 
-        /* Status Hit Hitungan Game Tambahan */
         .game-counter-status {
             font-size: 13px;
             font-weight: 700;
@@ -121,7 +117,6 @@
             color: #0077a3;
         }
 
-        /* Grid Game Responsif */
         .grid-games {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -136,7 +131,6 @@
             .grid-games { grid-template-columns: repeat(6, 1fr); }
         }
 
-        /* Card game melengkung tebal dominan Putih border Biru Muda */
         .game-card {
             background: #ffffff;
             border-radius: 24px;
@@ -160,7 +154,6 @@
             border-color: #99e5ff;
         }
 
-        /* Efek Denyut Skeleton Loader */
         .image-wrapper {
             width: 100%;
             aspect-ratio: 1/1;
@@ -207,7 +200,6 @@
             font-weight: bold;
         }
 
-        /* Tombol Kembali ke Atas */
         .scroll-top-btn {
             position: fixed;
             bottom: 20px;
@@ -227,48 +219,6 @@
             z-index: 99;
             transition: background 0.2s;
         }
-        .scroll-top-btn:hover {
-            background: #0077a3;
-        }
-
-        /* Tampilan Layar Game Penuh (Iframe Container) Anti Layar Hitam */
-        .game-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #000000;
-            z-index: 10000;
-            display: none;
-            flex-direction: column;
-        }
-
-        .game-overlay-bar {
-            background: #111;
-            padding: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            color: white;
-        }
-
-        .close-game-btn {
-            background: #ff3b30;
-            border: none;
-            color: white;
-            padding: 6px 16px;
-            font-weight: bold;
-            border-radius: 20px;
-            cursor: pointer;
-        }
-
-        .game-iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-            flex-grow: 1;
-        }
 
         @keyframes loading-pulse {
             0% { background-position: 200% 0; }
@@ -281,9 +231,8 @@
     <div class="header" id="mainHeader">🎮 Rama Infinite Game Hub</div>
 
     <div class="section-container">
-        
         <div class="search-category-container">
-            <input type="text" id="searchBox" class="search-box" placeholder="Cari game favoritmu di sini..." oninput="filterGames()">
+            <input type="text" id="searchBox" class="search-box" placeholder="Cari game favoritmu di sini... (Tekan Enter)" onkeydown="checkSearch(event)">
             <div class="category-list">
                 <button class="category-btn active" id="cat-all" onclick="selectCategory('all', this)">Semua</button>
                 <button class="category-btn" id="cat-featured" onclick="selectCategory('featured', this)">⭐ Rekomendasi</button>
@@ -301,71 +250,29 @@
         <div class="game-counter-status" id="gameCounter">Menghitung data...</div>
         
         <div class="grid-games" id="gameContainer"></div>
-        <div id="loadingStatus" class="loading">Memuat game lainnya...</div>
+        <div id="loadingStatus" class="loading">Memuat game...</div>
     </div>
 
     <button class="scroll-top-btn" id="scrollTopBtn" onclick="scrollToTop()">↑</button>
 
-    <!-- Kontainer Khusus untuk Memutar Game Langsung di Tempat -->
-    <div class="game-overlay" id="gameOverlay">
-        <div class="game-overlay-bar">
-            <span id="overlayGameTitle">Memuat Game...</span>
-            <button class="close-game-btn" onclick="closeGame()">Kembali ✕</button>
-        </div>
-        <iframe id="gameFrame" class="game-iframe" src=""></iframe>
-    </div>
-
     <script>
         let currentPage = 1;
-        const gamesPerPage = 40; 
+        const gamesPerPage = 30; 
         let isLoading = false;
         let currentCategory = 'all';
-        let userLanguage = 'id'; 
+        let currentSearchQuery = '';
+        let hasMoreGames = true;
 
-        // Kamus pintar otomatis dari Bahasa Indonesia ke Bahasa Inggris database
-        const dictionary = {
-            'rumah': ['house', 'home', 'room', 'mansion', 'building'],
-            'memancing': ['fish', 'fishing', 'catch'],
-            'pancing': ['fish', 'fishing'],
-            'mobil': ['car', 'race', 'drive'],
-            'tembak': ['shoot', 'gun', 'sniper'],
-            'masak': ['cook', 'cooking', 'chef', 'kitchen', 'cake']
-        };
-
-        const categoryKeywords = {
-            featured: ['super', 'mega', 'ultimate', 'champion', 'royal', 'pro', 'hero', 'battle', 'rush'],
-            roblox: ['roblox', 'blox', 'obby', 'craft'],
-            action: ['action', 'fight', 'stickman', 'combat', 'war'],
-            shooting: ['shoot', 'gun', 'sniper', 'fps', 'tembak', 'bullet'],
-            racing: ['race', 'car', 'moto', 'drive', 'balap', 'speed'],
-            puzzle: ['puzzle', 'match3', 'logic', 'teka', 'brain', 'hidden'],
-            girls: ['girl', 'dress', 'makeup', 'barbie', 'princess', 'perempuan'],
-            cooking: ['cook', 'cake', 'burger', 'pizza', 'masak', 'chef', 'bakery']
-        };
-
-        const translations = {
-            id: {
-                header: "🎮 Rama Infinite Game Hub",
-                searchPlaceholder: "Cari game favoritmu di sini...",
-                title: "Jelajahi Ribuan Game",
-                loading: "Memuat game lainnya...",
-                loadedAll: "Semua game telah dimuat!",
-                fail: "Gagal memuat. Mencoba kembali...",
-                counterText: "Menampilkan {count} game saat ini",
-                catAll: "Semua", catFeatured: "⭐ Rekomendasi", catRoblox: "Roblox", catAction: "Aksi", catShooting: "Menembak",
-                catRacing: "Balapan", catPuzzle: "Teka-teki", catGirls: "Perempuan", catCooking: "Memasak"
-            },
-            en: {
-                header: "🎮 Rama Infinite Game Hub",
-                searchPlaceholder: "Search your favorite game here...",
-                title: "Explore Thousands of Games",
-                loading: "Loading more games...",
-                loadedAll: "All games have been loaded!",
-                fail: "Failed to load. Retrying...",
-                counterText: "Showing {count} games currently",
-                catAll: "All", catFeatured: "⭐ Recommended", catRoblox: "Roblox", catAction: "Action", catShooting: "Shooting",
-                catRacing: "Racing", catPuzzle: "Puzzle", catGirls: "Girls", catCooking: "Cooking"
-            }
+        // Kamus terjemahan otomatis ke server
+        const indonesianDictionary = {
+            'rumah': 'house',
+            'memancing': 'fish',
+            'pancing': 'fish',
+            'mobil': 'car',
+            'balap': 'race',
+            'tembak': 'shoot',
+            'masak': 'cook',
+            'kue': 'cake'
         };
 
         const imageObserver = new IntersectionObserver((entries, observer) => {
@@ -382,39 +289,6 @@
             });
         }, { rootMargin: '0px 0px 200px 0px' });
 
-        async function detectLocationAndLanguage() {
-            try {
-                const res = await fetch('https://ipapi.co/json/');
-                const locationData = await res.json();
-                if (locationData.country_code !== 'ID') {
-                    userLanguage = 'en';
-                    applyTranslations();
-                }
-            } catch (error) {
-                console.log("Menggunakan setelan bahasa default (ID).");
-            }
-            fetchGames(currentPage);
-        }
-
-        function applyTranslations() {
-            const t = translations[userLanguage];
-            document.getElementById('mainHeader').innerText = t.header;
-            document.getElementById('searchBox').placeholder = t.searchPlaceholder;
-            document.getElementById('displayTitle').innerText = t.title;
-            document.getElementById('loadingStatus').innerText = t.loading;
-            
-            document.getElementById('cat-all').innerText = t.catAll;
-            document.getElementById('cat-featured').innerText = t.catFeatured;
-            document.getElementById('cat-roblox').innerText = t.catRoblox;
-            document.getElementById('cat-action').innerText = t.catAction;
-            document.getElementById('cat-shooting').innerText = t.catShooting;
-            document.getElementById('cat-racing').innerText = t.catRacing;
-            document.getElementById('cat-puzzle').innerText = t.catPuzzle;
-            document.getElementById('cat-girls').innerText = t.catGirls;
-            document.getElementById('cat-cooking').innerText = t.catCooking;
-            updateGameCount();
-        }
-
         function shuffleGames(array) {
             for (let i = array.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
@@ -424,62 +298,57 @@
         }
 
         function updateGameCount() {
-            const visibleCards = document.querySelectorAll('.game-card[style*="display: flex"]').length;
-            const textTemplate = translations[userLanguage].counterText;
-            document.getElementById('gameCounter').innerText = textTemplate.replace('{count}', visibleCards);
+            const count = document.querySelectorAll('.game-card').length;
+            document.getElementById('gameCounter').innerText = `Menampilkan ${count} game saat ini`;
         }
 
-        async function fetchGames(page) {
-            if (isLoading) return; 
+        async function fetchGames(page, isNewLoad = false) {
+            if (isLoading || (!hasMoreGames && !isNewLoad)) return;
             isLoading = true;
             document.getElementById('loadingStatus').style.display = 'block';
 
             let apiCategory = (currentCategory !== 'all' && currentCategory !== 'featured') ? currentCategory : '';
-            let categoryParam = apiCategory !== '' ? `&category=${apiCategory}` : '';
-            let currentDomain = window.location.hostname;
-            let adPremiumParam = `&gd_sdk_referrer_url=https://${currentDomain}`;
+            
+            // Jika ada query pencarian, gunakan query pencarian sebagai kategori utama ke API
+            let targetQuery = currentSearchQuery;
+            if (indonesianDictionary[targetQuery]) {
+                targetQuery = indonesianDictionary[targetQuery]; 
+            }
 
-            const apiURL = `https://catalog.api.gamedistribution.com/api/v2.0/rss/All/?collection=all&type=html5&amount=${gamesPerPage}&page=${page}${categoryParam}${adPremiumParam}&format=json`;
+            let categoryParam = apiCategory ? `&category=${apiCategory}` : '';
+            if (targetQuery) {
+                categoryParam = `&category=${targetQuery}`;
+            }
+
+            let currentDomain = window.location.hostname;
+            const apiURL = `https://catalog.api.gamedistribution.com/api/v2.0/rss/All/?collection=all&type=html5&amount=${gamesPerPage}&page=${page}${categoryParam}&gd_sdk_referrer_url=https://${currentDomain}&format=json`;
 
             try {
                 const response = await fetch(apiURL);
                 let data = await response.json();
                 
-                if (data.length === 0) {
-                    document.getElementById('loadingStatus').innerText = translations[userLanguage].loadedAll;
-                    window.removeEventListener('scroll', handleScroll);
+                if (!data || data.length === 0) {
+                    hasMoreGames = false;
+                    document.getElementById('loadingStatus').innerText = "Semua game telah dimuat!";
+                    isLoading = false;
+                    if (isNewLoad && document.querySelectorAll('.game-card').length === 0) {
+                        document.getElementById('loadingStatus').innerText = "Game tidak ditemukan. Coba kata kunci lain!";
+                    }
                     return;
                 }
 
-                if (currentCategory === 'all') {
+                if (currentCategory === 'all' && !targetQuery) {
                     data = shuffleGames(data);
                 }
 
-                let filteredData = data;
-                if (currentCategory !== 'all' && categoryKeywords[currentCategory]) {
-                    const keywords = categoryKeywords[currentCategory];
-                    filteredData = data.filter(game => {
-                        const titleLower = game.Title.toLowerCase();
-                        const descLower = game.Description ? game.Description.toLowerCase() : '';
-                        return keywords.some(keyword => titleLower.includes(keyword) || descLower.includes(keyword));
-                    });
-                }
-
-                renderGames(filteredData);
-
+                renderGames(data);
                 isLoading = false;
                 document.getElementById('loadingStatus').style.display = 'none';
                 updateGameCount();
 
-                if (currentCategory !== 'all' && filteredData.length < 6 && data.length > 0) {
-                    currentPage++;
-                    isLoading = false;
-                    fetchGames(currentPage);
-                }
-
             } catch (error) {
                 console.error("Gagal memuat game:", error);
-                document.getElementById('loadingStatus').innerText = translations[userLanguage].fail;
+                document.getElementById('loadingStatus').innerText = "Gagal memuat. Mencoba kembali...";
                 isLoading = false;
             }
         }
@@ -491,10 +360,11 @@
             gamesList.forEach(game => {
                 const card = document.createElement('div');
                 card.className = "game-card";
-                card.style.display = 'flex'; 
-                card.setAttribute('data-title', game.Title.toLowerCase());
-                // Pasang fungsi klik internal anti layar hitam
-                card.onclick = () => openGame(game.Url, game.Title);
+                
+                // ANTI LAYAR HITAM: Membuka game langsung di jendela saat ini (menimpa halaman aman dari blokir Google)
+                card.onclick = () => {
+                    window.location.href = game.Url;
+                };
 
                 const gameImage = game.Asset && game.Asset[0] ? game.Asset[0] : 'https://via.placeholder.com/150';
 
@@ -507,46 +377,30 @@
                 
                 const imgElement = card.querySelector('img');
                 imageObserver.observe(imgElement); 
-                
                 fragment.appendChild(card);
             });
             
             container.appendChild(fragment);
         }
 
-        // Fungsi Filter Pencarian Pintar dengan Dukungan Multi-Bahasa Lengkap
-        function filterGames() {
-            const rawKeyword = document.getElementById('searchBox').value.toLowerCase().trim();
-            const cards = document.querySelectorAll('.game-card');
-            
-            // Tentukan kata kunci pencarian yang akan digunakan
-            let searchKeywords = [rawKeyword];
-            if (dictionary[rawKeyword]) {
-                searchKeywords = searchKeywords.concat(dictionary[rawKeyword]);
+        // Jalankan pencarian saat menekan tombol Enter
+        function checkSearch(event) {
+            if (event.key === 'Enter') {
+                const value = document.getElementById('searchBox').value.toLowerCase().trim();
+                currentSearchQuery = value;
+                currentPage = 1;
+                hasMoreGames = true;
+                document.getElementById('gameContainer').innerHTML = '';
+                
+                // Reset tombol kategori jika sedang mencari sesuatu
+                if(value !== '') {
+                    document.querySelectorAll('.category-btn').forEach(btn => btn.classList.remove('active'));
+                } else {
+                    document.getElementById('cat-all').classList.add('active');
+                }
+
+                fetchGames(currentPage, true);
             }
-            
-            cards.forEach(card => {
-                const title = card.getAttribute('data-title');
-                // Cek apakah judul game mengandung kata ketik asli atau kata terjemahan kamus
-                const isMatch = searchKeywords.some(kw => title.includes(kw));
-                card.style.display = isMatch ? 'flex' : 'none';
-            });
-            updateGameCount();
-        }
-
-        // Fungsi Buka Game langsung di dalam website Rama (Taktik Poki)
-        function openGame(url, title) {
-            document.getElementById('overlayGameTitle').innerText = title;
-            document.getElementById('gameFrame').src = url;
-            document.getElementById('gameOverlay').style.display = 'flex';
-            document.body.style.overflow = 'hidden'; // Kunci scroll layar utama
-        }
-
-        // Fungsi Tutup Game
-        function closeGame() {
-            document.getElementById('gameOverlay').style.display = 'none';
-            document.getElementById('gameFrame').src = '';
-            document.body.style.overflow = 'auto'; // Aktifkan scroll kembali
         }
 
         function selectCategory(categoryName, element) {
@@ -554,14 +408,13 @@
             element.classList.add('active');
 
             currentCategory = categoryName;
+            currentSearchQuery = ''; 
             currentPage = 1;
+            hasMoreGames = true;
             document.getElementById('gameContainer').innerHTML = '';
             document.getElementById('searchBox').value = ''; 
             
-            window.removeEventListener('scroll', handleScroll);
-            window.addEventListener('scroll', handleScroll);
-
-            fetchGames(currentPage);
+            fetchGames(currentPage, true);
         }
 
         function handleScroll() {
@@ -573,8 +426,10 @@
             }
 
             if ((window.innerHeight + window.scrollY) >= document.documentElement.scrollHeight - 150) {
-                currentPage++;
-                fetchGames(currentPage);
+                if (!isLoading && hasMoreGames) {
+                    currentPage++;
+                    fetchGames(currentPage);
+                }
             }
         }
 
@@ -582,7 +437,8 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        detectLocationAndLanguage();
+        // Load pertama kali
+        fetchGames(currentPage, true);
         window.addEventListener('scroll', handleScroll);
     </script>
 
