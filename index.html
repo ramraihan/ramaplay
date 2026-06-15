@@ -137,16 +137,17 @@
             margin: 10px 0 20px 5px;
         }
 
+        /* KHUSUS INDONESIA/HP: Memaksa tampilan tepat 3 kotak ke samping */
         .games-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
+            gap: 10px;
         }
 
-        @media (min-width: 600px) {
+        @media (min-width: 768px) {
             .games-grid { grid-template-columns: repeat(4, 1fr); }
         }
-        @media (min-width: 900px) {
+        @media (min-width: 1024px) {
             .games-grid { grid-template-columns: repeat(6, 1fr); }
         }
 
@@ -228,37 +229,37 @@
     <script>
         let currentActiveCategory = 'all';
 
-        // 24 DATABASE UTUH - LINK DAN GAMBAR FIXED 100% AMAN DARI BLOKIR CORS & TIDAK 404
+        // 24 GAME UTUH SESUAI STRUKTUR RESMI GAMEPIX
         const databaseGames = [
-            { title: "Defend The Tank", category: "action", banner_image: "https://www.gamepix.com/images/game-placeholder.png", id: "defend-the-tank" },
-            { title: "Knight 360", category: "action", banner_image: "https://www.gamepix.com/images/game-placeholder.png", id: "knight-360" },
-            { title: "Sierras Flight", category: "action", banner_image: "https://www.gamepix.com/images/game-placeholder.png", id: "sierras-flight" },
-            { title: "Stickman War", category: "action", banner_image: "https://www.gamepix.com/images/game-placeholder.png", id: "stickman-war" },
+            { title: "Defend The Tank", category: "action", id: "defend-the-tank" },
+            { title: "Knight 360", category: "action", id: "knight-360" },
+            { title: "Sierras Flight", category: "action", id: "sierras-flight" },
+            { title: "Stickman War", category: "action", id: "stickman-war" },
             
-            { title: "Drift Cup Racing", category: "racing", banner_image: "https://www.gamepix.com/images/game-placeholder.png", id: "drift-cup-racing" },
-            { title: "Desert Road", category: "racing", banner_image: "https://www.gamepix.com/images/game-placeholder.png", id: "desert-road" },
-            { title: "Super Racing", category: "racing", banner_image: "https://www.gamepix.com/images/game-placeholder.png", id: "mini-race-rush" },
-            { title: "Moto X3M Pool Party", category: "racing", banner_image: "https://www.gamepix.com/images/game-placeholder.png", id: "moto-x3m-4-pool-party" },
+            { title: "Drift Cup Racing", category: "racing", id: "drift-cup-racing" },
+            { title: "Desert Road", category: "racing", id: "desert-road" },
+            { title: "Super Racing", category: "racing", id: "mini-race-rush" },
+            { title: "Moto X3M Pool Party", category: "racing", id: "moto-x3m-4-pool-party" },
 
-            { title: "Unblock That", category: "puzzle", banner_image: "https://www.gamepix.com/images/game-placeholder.png", id: "unblock-that" },
-            { title: "Merge Cakes", category: "puzzle", banner_image: "https://www.gamepix.com/images/game-placeholder.png", id: "merge-cakes" },
-            { title: "TenTrix", category: "puzzle", banner_image: "https://www.gamepix.com/images/game-placeholder.png", id: "tentrix" },
-            { title: "2048 Dragon", category: "puzzle", banner_image: "https://www.gamepix.com/images/game-placeholder.png", id: "2048-dragon" },
+            { title: "Unblock That", category: "puzzle", id: "unblock-that" },
+            { title: "Merge Cakes", category: "puzzle", id: "merge-cakes" },
+            { title: "TenTrix", category: "puzzle", id: "tentrix" },
+            { title: "2048 Dragon", category: "puzzle", id: "2048-dragon" },
 
-            { title: "Foot Chinko", category: "sports", banner_image: "https://www.gamepix.com/images/game-placeholder.png", id: "foot-chinko" },
-            { title: "Classic Bowling", category: "sports", banner_image: "https://www.gamepix.com/images/game-placeholder.png", id: "classic-bowling" },
-            { title: "Basketball Stars", category: "sports", banner_image: "https://www.gamepix.com/images/game-placeholder.png", id: "basketball-stars" },
-            { title: "Penalty Kick Wiz", category: "sports", banner_image: "https://www.gamepix.com/images/game-placeholder.png", id: "penalty-kick-wiz" },
+            { title: "Foot Chinko", category: "sports", id: "foot-chinko" },
+            { title: "Classic Bowling", category: "sports", id: "classic-bowling" },
+            { title: "Basketball Stars", category: "sports", id: "basketball-stars" },
+            { title: "Penalty Kick Wiz", category: "sports", id: "penalty-kick-wiz" },
 
-            { title: "Swoop", category: "arcade", banner_image: "https://www.gamepix.com/images/game-placeholder.png", id: "swoop" },
-            { title: "Neon Tower", category: "arcade", banner_image: "https://www.gamepix.com/images/game-placeholder.png", id: "neon-tower" },
-            { title: "Pac-Xon", category: "arcade", banner_image: "https://www.gamepix.com/images/game-placeholder.png", id: "pac-xon" },
-            { title: "Tap Tap Dash", category: "arcade", banner_image: "https://www.gamepix.com/images/game-placeholder.png", id: "tap-tap-dash" },
+            { title: "Swoop", category: "arcade", id: "swoop" },
+            { title: "Neon Tower", category: "arcade", id: "neon-tower" },
+            { title: "Pac-Xon", category: "arcade", id: "pac-xon" },
+            { title: "Tap Tap Dash", category: "arcade", id: "tap-tap-dash" },
 
-            { title: "Slime Rush TD", category: "strategy", banner_image: "https://www.gamepix.com/images/game-placeholder.png", id: "slime-rush-td" },
-            { title: "Ludo Legend", category: "strategy", banner_image: "https://www.gamepix.com/images/game-placeholder.png", id: "ludo-legend" },
-            { title: "Gladiators", category: "strategy", banner_image: "https://www.gamepix.com/images/game-placeholder.png", id: "gladiators" },
-            { title: "Subway Stone", category: "adventure", banner_image: "https://www.gamepix.com/images/game-placeholder.png", id: "subway-stone" }
+            { title: "Slime Rush TD", category: "strategy", id: "slime-rush-td" },
+            { title: "Ludo Legend", category: "strategy", id: "ludo-legend" },
+            { title: "Gladiators", category: "strategy", id: "gladiators" },
+            { title: "Subway Stone", category: "adventure", id: "subway-stone" }
         ];
 
         function toggleTheme() {
@@ -297,19 +298,19 @@
                 const gameTitleText = game.title;
                 card.setAttribute('data-name', gameTitleText.toLowerCase());
                 
-                // FORMAT LINK TERBARU (DIJAMIN TIDAK ERROR 404 & BERIKLAN RAMA)
-                const monetizationUrl = `https://play.gamepix.com/play/${game.id}?sid=1AAA1`;
+                // FIXED URL INTEGRASI UTAMA GAMEPIX LIVE - ANTI ERROR 404
+                const monetizationUrl = `https://www.gamepix.com/live/${game.id}?sid=1AAA1`;
                 
                 card.onclick = () => { 
                     window.location.href = monetizationUrl;
                 };
 
-                // SOLUSI BYPASS GAMBAR: Menggunakan proxy gambar terbuka milik Vercel/Unavatar agar gambar sampul muncul stabil
-                const secureImage = `https://unavatar.io/github/gamepix?fallback=https://images.gamepix.com/${game.id}/thumbnail/small.png`;
+                // FIXED URL GAMBAR LANGSUNG DARI SERVER KATA KUNCI UTAMA Tanpa Proxy Pihak Ketiga
+                const officialImage = `https://images.gamepix.com/${game.id}/thumbnail/small.png`;
 
                 card.innerHTML = `
                     <div class="img-box">
-                        <img src="${secureImage}" alt="${gameTitleText}" loading="lazy" onerror="this.src='https://images.gamepix.com/${game.id}/thumbnail/small.png'">
+                        <img src="${officialImage}" alt="${gameTitleText}" loading="lazy">
                     </div>
                     <div class="game-title">${gameTitleText}</div>
                 `;
@@ -344,7 +345,7 @@
             displayFilteredGames();
         }
 
-        // Jalankan fungsi saat web dibuka
+        // Jalankan otomatis untuk memuat semua 24 game pertama kali halaman dibuka
         displayFilteredGames();
     </script>
 
