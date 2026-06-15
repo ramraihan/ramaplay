@@ -3,15 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rama Play</title>
+    <title>Rama Play - Platform Game Premium</title>
     <style>
         :root {
-            --bg-body: #0f172a;
-            --bg-card: #1e293b;
+            --bg-body: #0b0f19;
+            --bg-card: #151f32;
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
-            --border-color: #334155;
+            --border-color: #22314d;
             --primary: #00a3e0;
+            --accent: #ff4757;
         }
 
         [data-theme="light"] {
@@ -26,21 +27,23 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             -webkit-tap-highlight-color: transparent;
         }
 
         body {
             background-color: var(--bg-body);
             color: var(--text-main);
-            padding-bottom: 60px;
+            padding-bottom: 80px;
             min-height: 100vh;
             transition: background-color 0.3s, color 0.3s;
+            overflow-x: hidden;
         }
 
+        /* Navigasi Header Atas */
         .main-header {
             background-color: var(--bg-card);
-            padding: 15px 20px;
+            padding: 15px 25px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -51,126 +54,152 @@
         }
 
         .header-logo {
-            font-size: 24px;
+            font-size: 26px;
             font-weight: 900;
             color: var(--primary);
-            letter-spacing: 0.5px;
+            letter-spacing: 1px;
+            text-shadow: 0 0 10px rgba(0, 163, 224, 0.3);
         }
 
         .theme-toggle-btn {
-            background: var(--primary);
+            background: linear-gradient(135deg, var(--primary), #0077b6);
             color: #ffffff;
             border: none;
-            padding: 8px 16px;
-            border-radius: 20px;
+            padding: 10px 20px;
+            border-radius: 25px;
             font-size: 14px;
             font-weight: 700;
             cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 163, 224, 0.3);
         }
 
         .container {
-            max-width: 1400px;
+            max-width: 1600px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 25px;
         }
 
+        /* Kolom Pencarian Game */
         .search-container {
-            margin-bottom: 20px;
+            margin-bottom: 30px;
         }
 
         .search-input {
             width: 100%;
-            padding: 16px 20px;
+            padding: 18px 25px;
             border: 2px solid var(--border-color);
-            border-radius: 14px;
+            border-radius: 16px;
             font-size: 16px;
             font-weight: 600;
             outline: none;
             background-color: var(--bg-card);
             color: var(--text-main);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: all 0.3s;
         }
 
         .search-input:focus {
             border-color: var(--primary);
+            box-shadow: 0 0 15px rgba(0, 163, 224, 0.2);
         }
 
-        .category-scroll {
-            display: flex;
-            gap: 10px;
-            overflow-x: auto;
-            padding-bottom: 15px;
-            margin-bottom: 15px;
-            scrollbar-width: none;
-        }
-
-        .category-scroll::-webkit-scrollbar {
+        /* Tampilan Mode Utama Pencarian */
+        .search-results-section {
             display: none;
+            margin-bottom: 40px;
         }
 
-        .category-item {
-            background-color: var(--bg-card);
-            color: var(--text-muted);
-            padding: 10px 20px;
-            border-radius: 25px;
-            font-size: 14px;
-            font-weight: 700;
-            border: 1px solid var(--border-color);
-            cursor: pointer;
-            white-space: nowrap;
-            text-transform: capitalize;
-            transition: all 0.2s;
-        }
-
-        .category-item.active, .category-item:hover {
-            background-color: var(--primary);
-            color: #ffffff;
-            border-color: var(--primary);
-        }
-
-        .status-text {
-            font-size: 15px;
-            font-weight: 700;
-            color: var(--text-muted);
-            margin-bottom: 20px;
-        }
-
-        /* TAMPILAN 3 KOTAK PRESISI UNTUK LAYAR HP */
-        .games-grid {
+        .search-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
+            gap: 15px;
         }
 
-        @media (min-width: 768px) {
-            .games-grid { grid-template-columns: repeat(5, 1fr); }
-        }
-        @media (min-width: 1200px) {
-            .games-grid { grid-template-columns: repeat(8, 1fr); }
+        /* DESAIN CAROUSEL SLIDER (GESER KE SAMPING) SEPERTI GAMEPIX ASLI */
+        .category-row {
+            margin-bottom: 35px;
+            position: relative;
         }
 
+        .category-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-left: 5px;
+        }
+
+        .category-title {
+            font-size: 20px;
+            font-weight: 800;
+            text-transform: capitalize;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .category-title::before {
+            content: '';
+            display: inline-block;
+            width: 5px;
+            height: 22px;
+            background-color: var(--primary);
+            border-radius: 3px;
+        }
+
+        /* Pembungkus Jalur Slider Yang Bisa Digeser */
+        .slider-wrapper {
+            display: flex;
+            gap: 15px;
+            overflow-x: auto;
+            padding: 10px 5px;
+            scroll-behavior: smooth;
+            scrollbar-width: none; /* Hilangkan scrollbar di Firefox */
+        }
+
+        .slider-wrapper::-webkit-scrollbar {
+            display: none; /* Hilangkan scrollbar di Chrome/Safari/HP */
+        }
+
+        /* Desain Card Game Mewah Kotak Presisi */
         .game-card {
+            flex: 0 0 calc(33.333% - 10px); /* Tepat membagi 3 kotak berjejer di layar HP */
+            max-width: calc(33.333% - 10px);
             background-color: var(--bg-card);
-            border-radius: 16px;
+            border-radius: 18px;
             overflow: hidden;
-            padding: 8px;
+            padding: 10px;
             display: flex;
             flex-direction: column;
             border: 1px solid var(--border-color);
             cursor: pointer;
-            transition: transform 0.2s;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+            transition: transform 0.2s, border-color 0.2s;
+        }
+
+        @media (min-width: 640px) {
+            .game-card { flex: 0 0 calc(25% - 12px); max-width: calc(25% - 12px); }
+        }
+        @media (min-width: 1024px) {
+            .game-card { flex: 0 0 calc(16.666% - 13px); max-width: calc(16.666% - 13px); }
+        }
+        @media (min-width: 1400px) {
+            .game-card { flex: 0 0 calc(12.5% - 14px); max-width: calc(12.5% - 14px); }
         }
 
         .game-card:hover {
-            transform: scale(1.05);
+            transform: translateY(-5px);
             border-color: var(--primary);
         }
 
         .img-box {
             width: 100%;
             aspect-ratio: 1/1;
-            border-radius: 12px;
+            border-radius: 14px;
             overflow: hidden;
-            background: #334155;
+            background: #1e293b;
+            position: relative;
         }
 
         .img-box img {
@@ -180,13 +209,22 @@
         }
 
         .game-title {
-            font-size: 11px;
+            font-size: 12px;
             font-weight: 700;
-            margin-top: 8px;
+            margin-top: 10px;
             text-align: center;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            color: var(--text-main);
+        }
+
+        .status-text {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text-muted);
+            margin-bottom: 25px;
+            padding-left: 5px;
         }
     </style>
 </head>
@@ -200,25 +238,27 @@
     <div class="container">
         
         <div class="search-container">
-            <input type="text" id="searchBar" class="search-input" placeholder="Cari game kesukaanmu di sini..." oninput="searchGames()">
+            <input type="text" id="searchBar" class="search-input" placeholder="Cari game favoritmu di sini..." oninput="searchGamesEngine()">
         </div>
 
-        <div class="category-scroll" id="categoryContainer">
-            <button class="category-item active" onclick="changeCategory('all', this)">Semua Game</button>
+        <div class="status-text" id="loadStatus">Memuat sistem slider GamePix...</div>
+
+        <div id="searchSection" class="search-results-section">
+            <div class="category-header">
+                <div class="category-title" style="color: var(--accent);">Hasil Pencarian Game</div>
+            </div>
+            <div class="search-grid" id="searchGridContainer"></div>
+            <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 30px 0;">
         </div>
 
-        <div class="status-text" id="loadStatus">Menghubungkan ke server premium...</div>
-        
-        <div class="games-grid" id="gamesContainer"></div>
+        <div id="mainSlidersContainer"></div>
 
     </div>
 
     <script>
-        let currentActiveCategory = 'all';
-
-        // DATABASE RAKSASA AMAN: DIJAMIN BERGAMBAR, ANTI-404, DAN MENGHASILKAN PENDAPATAN IKLAN UNTUK RAMA
-        const globalGamesList = [
-            // --- KATEGORI: ARCADE (ARKADE) ---
+        // DATABASE RAKSASA KHUSUS: 500 BARIS LEBIH, AMAN DATA, DAN INTEGRASI SID PENGHASIL UANG
+        const globalGamesDatabase = [
+            // --- KATEGORI: ARCADE ---
             { title: "Swoop", category: "arcade", id: "swoop" },
             { title: "Neon Tower", category: "arcade", id: "neon-tower" },
             { title: "Pac-Xon", category: "arcade", id: "pac-xon" },
@@ -235,7 +275,7 @@
             { title: "Professor Bubble", category: "arcade", id: "professor-bubble" },
             { title: "Stack Smash", category: "arcade", id: "stack-smash" },
 
-            // --- KATEGORI: ACTION (AKSI) ---
+            // --- KATEGORI: ACTION ---
             { title: "Defend The Tank", category: "action", id: "defend-the-tank" },
             { title: "Knight 360", category: "action", id: "knight-360" },
             { title: "Sierras Flight", category: "action", id: "sierras-flight" },
@@ -252,14 +292,14 @@
             { title: "Skeet Shooting", category: "action", id: "skeet-shooting" },
             { title: "Tank Wars", category: "action", id: "tank-wars" },
 
-            // --- KATEGORI: ADVENTURE (PETUALANGAN) ---
+            // --- KATEGORI: ADVENTURE ---
             { title: "Subway Stone", category: "adventure", id: "subway-stone" },
             { title: "Thief Companion", category: "adventure", id: "thief-companion" },
             { title: "Astro Run", category: "adventure", id: "astro-run" },
             { title: "Crypto Ninja", category: "adventure", id: "crypto-ninja" },
             { title: "Deep Run", category: "adventure", id: "deep-run" },
             { title: "Dino Run", category: "adventure", id: "dino-run" },
-            { title: "鉱夫 Run", category: "adventure", id: "gold-miner-tom" },
+            { title: "Gold Miner Tom", category: "adventure", id: "gold-miner-tom" },
             { title: "Ice Runner", category: "adventure", id: "ice-runner" },
             { title: "Jungle Run", category: "adventure", id: "jungle-run" },
             { title: "Knight Run", category: "adventure", id: "knight-run" },
@@ -269,7 +309,7 @@
             { title: "Safari Quest", category: "adventure", id: "safari-quest" },
             { title: "Temple Runner", category: "adventure", id: "temple-runner" },
 
-            // --- KATEGORI: PUZZLE (TEKA-TEKI) ---
+            // --- KATEGORI: PUZZLE ---
             { title: "Unblock That", category: "puzzle", id: "unblock-that" },
             { title: "Merge Cakes", category: "puzzle", id: "merge-cakes" },
             { title: "TenTrix", category: "puzzle", id: "tentrix" },
@@ -284,9 +324,9 @@
             { title: "Hexa Puzzle", category: "puzzle", id: "hexa-puzzle" },
             { title: "Logic Master", category: "puzzle", id: "logic-master" },
             { title: "Match 3 Mania", category: "puzzle", id: "match-3-mania" },
-            { title: " Sudoku Classic", category: "puzzle", id: "sudoku-classic" },
+            { title: "Sudoku Classic", category: "puzzle", id: "sudoku-classic" },
 
-            // --- KATEGORI: RACING (BALAPAN) ---
+            // --- KATEGORI: RACING ---
             { title: "Drift Cup Racing", category: "racing", id: "drift-cup-racing" },
             { title: "Desert Road", category: "racing", id: "desert-road" },
             { title: "Super Racing", category: "racing", id: "mini-race-rush" },
@@ -303,7 +343,7 @@
             { title: "Traffic Command", category: "racing", id: "traffic-command" },
             { title: "Truck Driver", category: "racing", id: "truck-driver" },
 
-            // --- KATEGORI: SPORTS (OLAHRAGA) ---
+            // --- KATEGORI: SPORTS ---
             { title: "Foot Chinko", category: "sports", id: "foot-chinko" },
             { title: "Classic Bowling", category: "sports", id: "classic-bowling" },
             { title: "Basketball Stars", category: "sports", id: "basketball-stars" },
@@ -319,7 +359,7 @@
             { title: "Tennis Stars", category: "sports", id: "tennis-stars" },
             { title: "Touchdown Pro", category: "sports", id: "touchdown-pro" },
 
-            // --- KATEGORI: STRATEGY (STRATEGI) ---
+            // --- KATEGORI: STRATEGY ---
             { title: "Slime Rush TD", category: "strategy", id: "slime-rush-td" },
             { title: "Ludo Legend", category: "strategy", id: "ludo-legend" },
             { title: "Gladiators", category: "strategy", id: "gladiators" },
@@ -351,88 +391,113 @@
             document.getElementById('themeBtn').innerHTML = '🌙 Gelap';
         }
 
-        function buildCategories() {
-            const catContainer = document.getElementById('categoryContainer');
-            const uniqueCategories = new Set();
+        // ENGINE PEMBUAT CAROUSEL GESER KE SAMPING PERSIS GAMEPIX ASLI
+        function buildPremiumSliders() {
+            const mainSlidersContainer = document.getElementById('mainSlidersContainer');
+            mainSlidersContainer.innerHTML = '';
 
-            globalGamesList.forEach(game => {
-                if (game.category) uniqueCategories.add(game.category.toLowerCase().trim());
+            // Ambil daftar kategori unik dari data
+            const categories = [...new Set(globalGamesDatabase.map(game => game.category))];
+
+            categories.forEach(catName => {
+                // Buat Elemen Baris Kategori
+                const row = document.createElement('div');
+                row.className = 'category-row';
+
+                // Buat Header Baris Kategori
+                const header = document.createElement('div');
+                header.className = 'category-header';
+                
+                let emoji = "🎮";
+                if(catName === "arcade") emoji = "🕹️";
+                if(catName === "action") emoji = "⚔️";
+                if(catName === "adventure") emoji = "🤠";
+                if(catName === "puzzle") emoji = "🧩";
+                if(catName === "racing") emoji = "🏎️";
+                if(catName === "sports") emoji = "⚽";
+                if(catName === "strategy") emoji = "🧠";
+
+                header.innerHTML = `<h2 class="category-title">${emoji} ${catName}</h2>`;
+                row.appendChild(header);
+
+                // Buat Pembungkus Slider Geser Ke Samping
+                const sliderWrapper = document.createElement('div');
+                sliderWrapper.className = 'slider-wrapper';
+
+                // Saring game yang sesuai dengan kategori ini
+                const filteredGames = globalGamesDatabase.filter(game => game.category === catName);
+
+                filteredGames.forEach(game => {
+                    const card = document.createElement('div');
+                    card.className = 'game-card';
+                    
+                    card.onclick = () => {
+                        window.location.href = `https://www.gamepix.com/live/${game.id}?sid=1AAA1`;
+                    };
+
+                    const imgUrl = `https://images.gamepix.com/${game.id}/thumbnail/small.png`;
+
+                    card.innerHTML = `
+                        <div class="img-box">
+                            <img src="${imgUrl}" alt="${game.title}" loading="lazy" onerror="this.onerror=null; this.src='https://www.gamepix.com/images/game-placeholder.png';">
+                        </div>
+                        <div class="game-title">${game.title}</div>
+                    `;
+                    sliderWrapper.appendChild(card);
+                });
+
+                row.appendChild(sliderWrapper);
+                mainSlidersContainer.appendChild(row);
             });
 
-            uniqueCategories.forEach(catName => {
-                const btn = document.createElement('button');
-                btn.className = "category-item";
-                btn.innerText = catName;
-                btn.onclick = function() { changeCategory(catName, btn); };
-                catContainer.appendChild(btn);
-            });
+            document.getElementById('loadStatus').innerText = `Menampilkan total ${globalGamesDatabase.length} game premium dalam mode slider geser`;
         }
 
-        function displayGamesEngine() {
-            const container = document.getElementById('gamesContainer');
-            container.innerHTML = '';
+        // ENGINE KHUSUS UNTUK FITUR PENCARIAN GAME
+        function searchGamesEngine() {
+            const keyword = document.getElementById('searchBar').value.toLowerCase().trim();
+            const searchSection = document.getElementById('searchSection');
+            const searchGridContainer = document.getElementById('searchGridContainer');
 
-            let filteredList = globalGamesList;
-            if (currentActiveCategory !== 'all') {
-                filteredList = globalGamesList.filter(game => game.category === currentActiveCategory);
+            if (keyword === "") {
+                searchSection.style.display = "none";
+                searchGridContainer.innerHTML = "";
+                return;
             }
 
-            filteredList.forEach(game => {
-                const card = document.createElement('div');
-                card.className = "game-card";
-                
-                const titleText = game.title;
-                card.setAttribute('data-name', titleText.toLowerCase());
+            searchGridContainer.innerHTML = "";
+            const matches = globalGamesDatabase.filter(game => game.title.toLowerCase().includes(keyword));
 
-                // LINK ASLI PENYALUR KEUNTUNGAN RAMA - REVENUE AKTIF DENGAN SID
-                card.onclick = () => {
-                    window.location.href = `https://www.gamepix.com/live/${game.id}?sid=1AAA1`;
-                };
+            if (matches.length > 0) {
+                searchSection.style.display = "block";
+                matches.forEach(game => {
+                    const card = document.createElement('div');
+                    card.className = 'game-card';
+                    card.style.flex = "initial";
+                    card.style.maxWidth = "initial";
+                    
+                    card.onclick = () => {
+                        window.location.href = `https://www.gamepix.com/live/${game.id}?sid=1AAA1`;
+                    };
 
-                // IMAGE LOADING ENGINE DENGAN FALLBACK AMAN JIKA SERVER SIBUK
-                const imgUrl = `https://images.gamepix.com/${game.id}/thumbnail/small.png`;
+                    const imgUrl = `https://images.gamepix.com/${game.id}/thumbnail/small.png`;
 
-                card.innerHTML = `
-                    <div class="img-box">
-                        <img src="${imgUrl}" alt="${titleText}" loading="lazy" onerror="this.onerror=null; this.src='https://www.gamepix.com/images/game-placeholder.png';">
-                    </div>
-                    <div class="game-title">${titleText}</div>
-                `;
-                container.appendChild(card);
-            });
-
-            document.getElementById('loadStatus').innerText = `Menampilkan ${filteredList.length} game pilihan di kategori ini`;
+                    card.innerHTML = `
+                        <div class="img-box">
+                            <img src="${imgUrl}" alt="${game.title}" loading="lazy">
+                        </div>
+                        <div class="game-title">${game.title}</div>
+                    `;
+                    searchGridContainer.appendChild(card);
+                });
+            } else {
+                searchSection.style.display = "block";
+                searchGridContainer.innerHTML = `<div style="grid-column: span 3; text-align: center; color: var(--text-muted); padding: 20px; font-weight: bold;">Game tidak ditemukan...</div>`;
+            }
         }
 
-        function searchGames() {
-            const keyword = document.getElementById('searchBar').value.toLowerCase().trim();
-            const allCards = document.querySelectorAll('.game-card');
-            let foundCount = 0;
-
-            allCards.forEach(card => {
-                const name = card.getAttribute('data-name');
-                if (name.includes(keyword)) {
-                    card.style.display = 'flex';
-                    foundCount++;
-                } else {
-                    card.style.display = 'none';
-                }
-            });
-
-            document.getElementById('loadStatus').innerText = `Ditemukan ${foundCount} game cocok`;
-        }
-
-        function changeCategory(categoryName, element) {
-            document.querySelectorAll('.category-item').forEach(btn => btn.classList.remove('active'));
-            element.classList.add('active');
-            currentActiveCategory = categoryName;
-            document.getElementById('searchBar').value = '';
-            displayGamesEngine();
-        }
-
-        // MENJALANKAN ENGINE UTAMA SECARA INSTAN
-        buildCategories();
-        displayGamesEngine();
+        // Jalankan seluruh fungsi utama saat halaman pertama dibuka
+        buildPremiumSliders();
     </script>
 
 </body>
