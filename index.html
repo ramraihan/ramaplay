@@ -104,7 +104,7 @@
             box-shadow: 0 4px 12px rgba(0, 163, 224, 0.3);
         }
 
-        /* Status Hit Hitungan Game Tambahan */
+        /* Status Hit Hitungan Game */
         .game-counter-status {
             font-size: 13px;
             font-weight: 700;
@@ -284,6 +284,23 @@
             cooking: ['cook', 'cake', 'burger', 'pizza', 'masak', 'chef', 'bakery']
         };
 
+        // Kamus pintar penerjemah otomatis kata kunci Indonesia ke Inggris
+        const searchDictionary = {
+            'bola': ['foot', 'soccer', 'ball'],
+            'memancing': ['fish'],
+            'pancing': ['fish'],
+            'memasak': ['cook', 'cake', 'bakery', 'chef', 'kitchen'],
+            'masak': ['cook', 'cake', 'bakery'],
+            'rumah': ['house', 'home', 'room'],
+            'balap': ['race', 'car', 'moto', 'drive'],
+            'balapan': ['race', 'car', 'moto', 'drive'],
+            'tembak': ['shoot', 'gun', 'sniper'],
+            'tembakan': ['shoot', 'gun', 'sniper'],
+            'perempuan': ['girl', 'dress', 'makeup', 'barbie'],
+            'anak': ['kids', 'baby'],
+            'lari': ['run', 'rush']
+        };
+
         const translations = {
             id: {
                 header: "🎮 Rama Play",
@@ -397,7 +414,6 @@
                 }
 
                 let filteredData = data;
-                // Saringan hanya bekerja jika berada di tab kategori tertentu (bukan halaman utama 'all')
                 if (currentCategory !== 'all' && categoryKeywords[currentCategory]) {
                     const keywords = categoryKeywords[currentCategory];
                     filteredData = data.filter(game => {
@@ -413,7 +429,6 @@
                 document.getElementById('loadingStatus').style.display = 'none';
                 updateGameCount();
 
-                // Auto-Refill jika game terlalu sedikit (hanya untuk halaman kategori yang disaring ketat)
                 if (currentCategory !== 'all' && filteredData.length < 6 && data.length > 0) {
                     currentPage++;
                     isLoading = false;
@@ -458,12 +473,21 @@
         }
 
         function filterGames() {
-            const keyword = document.getElementById('searchBox').value.toLowerCase();
+            const inputVal = document.getElementById('searchBox').value.toLowerCase().trim();
             const cards = document.querySelectorAll('.game-card');
+            
+            // Cek apakah inputan terdaftar di dalam kamus terjemahan lokal kita
+            let targetKeywords = [inputVal];
+            if (searchDictionary[inputVal]) {
+                targetKeywords = searchDictionary[inputVal];
+            }
             
             cards.forEach(card => {
                 const title = card.getAttribute('data-title');
-                card.style.display = title.includes(keyword) ? 'flex' : 'none';
+                
+                // Game akan muncul jika judulnya mengandung kata kunci asli atau hasil terjemahan kamus
+                const isMatch = targetKeywords.some(keyword => title.includes(keyword));
+                card.style.display = isMatch ? 'flex' : 'none';
             });
             updateGameCount();
         }
@@ -475,7 +499,7 @@
             currentCategory = categoryName;
             currentPage = 1;
             document.getElementById('gameContainer').innerHTML = '';
-            document.getElementById('searchBox').value = ''; // Reset input pencarian saat pindah kategori
+            document.getElementById('searchBox').value = ''; 
             
             window.removeEventListener('scroll', handleScroll);
             window.addEventListener('scroll', handleScroll);
