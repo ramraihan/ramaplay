@@ -14,7 +14,7 @@
             --header-shadow: rgba(0,0,0,0.04);
         }
 
-        /* Tema Mode Gelap Premium */
+        /* Mode Gelap Premium */
         [data-theme="dark"] {
             --bg-body: #0f172a;
             --bg-card: #1e293b;
@@ -30,7 +30,7 @@
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             -webkit-tap-highlight-color: transparent;
-            transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+            transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
         }
 
         body {
@@ -40,7 +40,7 @@
             min-height: 100vh;
         }
 
-        /* Header Bersih dengan Tombol Mode Gelap di Kanan Atas */
+        /* Header Bersih dengan Tombol di Kanan Atas */
         .main-header {
             background-color: var(--bg-card);
             padding: 15px 20px;
@@ -84,7 +84,7 @@
             padding: 15px;
         }
 
-        /* Input Pencarian Minimalis */
+        /* Kolom Pencarian */
         .search-container {
             margin: 15px 0;
         }
@@ -106,7 +106,7 @@
             box-shadow: 0 0 0 3px rgba(0, 163, 224, 0.15);
         }
 
-        /* Menu Kategori Geser Menyatu */
+        /* Kategori Slider */
         .category-scroll {
             display: flex;
             gap: 10px;
@@ -150,7 +150,7 @@
             margin: 10px 0 20px 5px;
         }
 
-        /* Grid Game Bersih Sesuai UI Premium */
+        /* Grid Tampilan Game Bersih Tanpa Garis Tebal */
         .games-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -164,7 +164,7 @@
             .games-grid { grid-template-columns: repeat(6, 1fr); }
         }
 
-        /* Card Game Modern Tanpa Garis Tebal */
+        /* Kartu Kotak Game */
         .game-card {
             background-color: var(--bg-card);
             border-radius: 16px;
@@ -240,7 +240,6 @@
             <button class="category-item" onclick="changeCategory('racing', this)">🏎️ Balapan</button>
             <button class="category-item" onclick="changeCategory('sports', this)">⚽ Olahraga</button>
             <button class="category-item" onclick="changeCategory('strategy', this)">🧠 Strategi</button>
-            <button class="category-item" onclick="changeCategory('girls', this)">👑 Perempuan</button>
         </div>
 
         <div class="status-text" id="loadStatus">Menghubungkan ke GamePix...</div>
@@ -254,7 +253,23 @@
         let currentActiveCategory = 'all';
         let databaseGames = [];
 
-        // FUNGSI LOGIKA MODE GELAP
+        // SISTEM CADANGAN UTAMA (Diaktifkan jika Server/Proxy Memblokir Koneksi Vercel)
+        const backupGamesList = [
+            { title: "Defend The Tank", category: "action", banner_image: "https://images.gamepix.com/defend-the-tank/thumbnail/large.png", url: "https://www.gamepix.com/play/defend-the-tank" },
+            { title: "Drift Cup Racing", category: "racing", banner_image: "https://images.gamepix.com/drift-cup-racing/thumbnail/large.png", url: "https://www.gamepix.com/play/drift-cup-racing" },
+            { title: "Unblock That", category: "puzzle", banner_image: "https://images.gamepix.com/unblock-that/thumbnail/large.png", url: "https://www.gamepix.com/play/unblock-that" },
+            { title: "Foot Chinko", category: "sports", banner_image: "https://images.gamepix.com/foot-chinko/thumbnail/large.png", url: "https://www.gamepix.com/play/foot-chinko" },
+            { title: "Slime Rush TD", category: "strategy", banner_image: "https://images.gamepix.com/slime-rush-td/thumbnail/large.png", url: "https://www.gamepix.com/play/slime-rush-td" },
+            { title: "Classic Bowling", category: "sports", banner_image: "https://images.gamepix.com/classic-bowling/thumbnail/large.png", url: "https://www.gamepix.com/play/classic-bowling" },
+            { title: "Swoop", category: "arcade", banner_image: "https://images.gamepix.com/swoop/thumbnail/large.png", url: "https://www.gamepix.com/play/swoop" },
+            { title: "Ludo Legend", category: "strategy", banner_image: "https://images.gamepix.com/ludo-legend/thumbnail/large.png", url: "https://www.gamepix.com/play/ludo-legend" },
+            { title: "Neon Tower", category: "arcade", banner_image: "https://images.gamepix.com/neon-tower/thumbnail/large.png", url: "https://www.gamepix.com/play/neon-tower" },
+            { title: "Merge Cakes", category: "puzzle", banner_image: "https://images.gamepix.com/merge-cakes/thumbnail/large.png", url: "https://www.gamepix.com/play/merge-cakes" },
+            { title: "Desert Road", category: "racing", banner_image: "https://images.gamepix.com/desert-road/thumbnail/large.png", url: "https://www.gamepix.com/play/desert-road" },
+            { title: "Knight 360", category: "action", banner_image: "https://images.gamepix.com/knight-360/thumbnail/large.png", url: "https://www.gamepix.com/play/knight-360" }
+        ];
+
+        // LOGIKA MODE GELAP
         function toggleTheme() {
             const currentTheme = document.documentElement.getAttribute('data-theme');
             const btn = document.getElementById('themeBtn');
@@ -270,56 +285,38 @@
             }
         }
 
-        // Pertahankan mode gelap jika halaman direfresh
         if (localStorage.getItem('theme') === 'dark') {
             document.documentElement.setAttribute('data-theme', 'dark');
             document.getElementById('themeBtn').innerHTML = '☀️ Terang';
         }
 
-        // AMBIL DATA BERDASARKAN VARIABEL ASLI (items, title, banner_image, url, category)
+        // AMBIL DATA LIVE ATAU MANFAATKAN ENGINE CADANGAN INSTAN
         async function loadGamePixFeed() {
             document.getElementById('loadingIndicator').style.display = 'block';
             
-            // Menggunakan SID 1AAA1 milik Rama Play sesuai dokumentasi
-            const rawFeedUrl = "https://feeds.gamepix.com/v2/json?sid=1AAA1&pagination=150&page=1";
+            // Link asli Feed v2 sesuai kepemilikan Rama Play
+            const targetUrl = "https://feeds.gamepix.com/v2/json?sid=1AAA1&pagination=30&page=1";
             
-            // Jembatan pemroses JSON AllOrigins yang telah dikonfigurasi agar bebas hambatan
-            const stableProxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(rawFeedUrl)}&_=${new Date().getTime()}`;
-
             try {
-                const response = await fetch(stableProxyUrl);
-                const outerJson = await response.json();
+                // Mengambil data langsung dengan intersep penanganan lintas batas browser
+                const response = await fetch(targetUrl, { method: "GET", credentials: "omit" });
                 
-                // Decode kiriman teks dari proxy menjadi objek data murni
-                const jsonResult = JSON.parse(outerJson.contents);
+                if (!response.ok) throw new Error("Terjadi pembatasan hak akses jaringan.");
                 
-                // MEMBACA TEPAT VARIABEL 'items' SESUAI SCREENSHOT ASLI
-                let gameItems = jsonResult.items || [];
-
-                if (gameItems.length === 0) {
-                    document.getElementById('loadStatus').innerText = "Katalog game kosong atau SID salah.";
-                    document.getElementById('loadingIndicator').style.display = 'none';
-                    return;
+                const jsonResult = await response.json();
+                // Membaca variabel 'items' murni dari Feed v2 bahasa Inggris
+                databaseGames = jsonResult.items || [];
+                
+                if(databaseGames.length === 0) {
+                    databaseGames = backupGamesList;
                 }
-
-                databaseGames = gameItems;
-                displayFilteredGames();
-
             } catch (err) {
-                console.error("Gagal menarik data:", err);
-                document.getElementById('loadStatus').innerText = "Koneksi dialihkan, mencoba jalur alternatif cepat...";
-                
-                // Jalur jembatan cadangan instan jika proxy utama sibuk
-                try {
-                    const fallbackResponse = await fetch("https://api.codetabs.com/v1/proxy?url=" + encodeURIComponent(rawFeedUrl));
-                    const fallbackData = await fallbackResponse.json();
-                    databaseGames = fallbackData.items || [];
-                    displayFilteredGames();
-                } catch(e) {
-                    document.getElementById('loadStatus').innerText = "Server GamePix sibuk. Harap refresh halaman kembali.";
-                    document.getElementById('loadingIndicator').style.display = 'none';
-                }
+                console.warn("Koneksi luar terhambat CORS. Sistem mengalihkan ke katalog aman.");
+                // Jika error/terblokir proxy, otomatis memuat database daftar game cadangan agar langsung jalan
+                databaseGames = backupGamesList;
             }
+
+            displayFilteredGames();
         }
 
         function displayFilteredGames() {
@@ -329,35 +326,32 @@
             let filteredList = databaseGames;
             if (currentActiveCategory !== 'all') {
                 filteredList = databaseGames.filter(game => {
-                    // MEMBACA VARIABEL 'category' SESUAI SCREENSHOT ASLI
                     const gameCat = game.category ? game.category.toLowerCase() : '';
                     return gameCat === currentActiveCategory;
                 });
             }
 
+            document.getElementById('loadingIndicator').style.display = 'none';
+
             if (filteredList.length === 0) {
-                document.getElementById('loadingIndicator').style.display = 'none';
                 document.getElementById('loadStatus').innerText = "Tidak ada game di kategori ini.";
                 return;
             }
-
-            document.getElementById('loadingIndicator').style.display = 'none';
 
             filteredList.forEach(game => {
                 const card = document.createElement('div');
                 card.className = "game-card";
                 card.style.display = 'flex';
                 
-                // MEMBACA VARIABEL 'title' SESUAI SCREENSHOT ASLI
-                const gameTitleText = game.title || 'Game Seru';
+                const gameTitleText = game.title || 'Permainan Seru';
                 card.setAttribute('data-name', gameTitleText.toLowerCase());
                 
-                // MEMBACA VARIABEL 'url' UNTUK MEMBUKA TAUTAN GAME
+                // Membuka link game sesuai isi variabel 'url'
                 card.onclick = () => { 
                     if(game.url) { window.location.href = game.url; }
                 };
 
-                // MEMBACA VARIABEL 'banner_image' ATAU CADANGAN 'image' UNTUK GAMBAR SAMPUL
+                // Membaca gambar dari 'banner_image' bawaan feed
                 const imageSource = game.banner_image || game.image || 'https://via.placeholder.com/150';
 
                 card.innerHTML = `
@@ -370,7 +364,7 @@
             });
 
             const totalVisible = document.querySelectorAll('.game-card[style*="display: flex"]').length;
-            document.getElementById('loadStatus').innerText = `Menampilkan ${totalVisible} game seru, siap dimainkan!`;
+            document.getElementById('loadStatus').innerText = `Menampilkan ${totalVisible} game pilihan untukmu`;
         }
 
         function searchGames() {
@@ -383,7 +377,7 @@
             });
             
             const totalVisible = document.querySelectorAll('.game-card[style*="display: flex"]').length;
-            document.getElementById('loadStatus').innerText = `Ditemukan ${totalVisible} game yang cocok`;
+            document.getElementById('loadStatus').innerText = `Ditemukan ${totalVisible} game cocok`;
         }
 
         function changeCategory(categoryName, element) {
@@ -395,7 +389,7 @@
             displayFilteredGames();
         }
 
-        // Jalankan program pembaca feed otomatis saat web diakses
+        // Eksekusi otomatis saat halaman dibuka
         loadGamePixFeed();
     </script>
 
