@@ -104,7 +104,7 @@
             box-shadow: 0 4px 12px rgba(0, 163, 224, 0.3);
         }
 
-        /* Status Hit Hitungan Game */
+        /* Status Hit Hitungan Game Tambahan */
         .game-counter-status {
             font-size: 13px;
             font-weight: 700;
@@ -151,6 +151,7 @@
             align-items: center;
             transition: transform 0.2s, box-shadow 0.2s;
             border: 2px solid #e6f9ff;
+            cursor: pointer;
         }
 
         .game-card:hover {
@@ -230,6 +231,45 @@
             background: #0077a3;
         }
 
+        /* Tampilan Layar Game Penuh (Iframe Container) Anti Layar Hitam */
+        .game-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000000;
+            z-index: 10000;
+            display: none;
+            flex-direction: column;
+        }
+
+        .game-overlay-bar {
+            background: #111;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+        }
+
+        .close-game-btn {
+            background: #ff3b30;
+            border: none;
+            color: white;
+            padding: 6px 16px;
+            font-weight: bold;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+
+        .game-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            flex-grow: 1;
+        }
+
         @keyframes loading-pulse {
             0% { background-position: 200% 0; }
             100% { background-position: -200% 0; }
@@ -238,7 +278,7 @@
 </head>
 <body>
 
-    <div class="header" id="mainHeader">🎮 Rama Play</div>
+    <div class="header" id="mainHeader">🎮 Rama Infinite Game Hub</div>
 
     <div class="section-container">
         
@@ -266,12 +306,31 @@
 
     <button class="scroll-top-btn" id="scrollTopBtn" onclick="scrollToTop()">↑</button>
 
+    <!-- Kontainer Khusus untuk Memutar Game Langsung di Tempat -->
+    <div class="game-overlay" id="gameOverlay">
+        <div class="game-overlay-bar">
+            <span id="overlayGameTitle">Memuat Game...</span>
+            <button class="close-game-btn" onclick="closeGame()">Kembali ✕</button>
+        </div>
+        <iframe id="gameFrame" class="game-iframe" src=""></iframe>
+    </div>
+
     <script>
         let currentPage = 1;
         const gamesPerPage = 40; 
         let isLoading = false;
         let currentCategory = 'all';
         let userLanguage = 'id'; 
+
+        // Kamus pintar otomatis dari Bahasa Indonesia ke Bahasa Inggris database
+        const dictionary = {
+            'rumah': ['house', 'home', 'room', 'mansion', 'building'],
+            'memancing': ['fish', 'fishing', 'catch'],
+            'pancing': ['fish', 'fishing'],
+            'mobil': ['car', 'race', 'drive'],
+            'tembak': ['shoot', 'gun', 'sniper'],
+            'masak': ['cook', 'cooking', 'chef', 'kitchen', 'cake']
+        };
 
         const categoryKeywords = {
             featured: ['super', 'mega', 'ultimate', 'champion', 'royal', 'pro', 'hero', 'battle', 'rush'],
@@ -284,26 +343,9 @@
             cooking: ['cook', 'cake', 'burger', 'pizza', 'masak', 'chef', 'bakery']
         };
 
-        // Kamus pintar penerjemah otomatis kata kunci Indonesia ke Inggris
-        const searchDictionary = {
-            'bola': ['foot', 'soccer', 'ball'],
-            'memancing': ['fish'],
-            'pancing': ['fish'],
-            'memasak': ['cook', 'cake', 'bakery', 'chef', 'kitchen'],
-            'masak': ['cook', 'cake', 'bakery'],
-            'rumah': ['house', 'home', 'room'],
-            'balap': ['race', 'car', 'moto', 'drive'],
-            'balapan': ['race', 'car', 'moto', 'drive'],
-            'tembak': ['shoot', 'gun', 'sniper'],
-            'tembakan': ['shoot', 'gun', 'sniper'],
-            'perempuan': ['girl', 'dress', 'makeup', 'barbie'],
-            'anak': ['kids', 'baby'],
-            'lari': ['run', 'rush']
-        };
-
         const translations = {
             id: {
-                header: "🎮 Rama Play",
+                header: "🎮 Rama Infinite Game Hub",
                 searchPlaceholder: "Cari game favoritmu di sini...",
                 title: "Jelajahi Ribuan Game",
                 loading: "Memuat game lainnya...",
@@ -314,7 +356,7 @@
                 catRacing: "Balapan", catPuzzle: "Teka-teki", catGirls: "Perempuan", catCooking: "Memasak"
             },
             en: {
-                header: "🎮 Rama Play",
+                header: "🎮 Rama Infinite Game Hub",
                 searchPlaceholder: "Search your favorite game here...",
                 title: "Explore Thousands of Games",
                 loading: "Loading more games...",
@@ -447,12 +489,12 @@
             const fragment = document.createDocumentFragment(); 
             
             gamesList.forEach(game => {
-                const card = document.createElement('a');
-                card.href = game.Url;
-                card.target = "_blank";
+                const card = document.createElement('div');
                 card.className = "game-card";
                 card.style.display = 'flex'; 
                 card.setAttribute('data-title', game.Title.toLowerCase());
+                // Pasang fungsi klik internal anti layar hitam
+                card.onclick = () => openGame(game.Url, game.Title);
 
                 const gameImage = game.Asset && game.Asset[0] ? game.Asset[0] : 'https://via.placeholder.com/150';
 
@@ -472,24 +514,39 @@
             container.appendChild(fragment);
         }
 
+        // Fungsi Filter Pencarian Pintar dengan Dukungan Multi-Bahasa Lengkap
         function filterGames() {
-            const inputVal = document.getElementById('searchBox').value.toLowerCase().trim();
+            const rawKeyword = document.getElementById('searchBox').value.toLowerCase().trim();
             const cards = document.querySelectorAll('.game-card');
             
-            // Cek apakah inputan terdaftar di dalam kamus terjemahan lokal kita
-            let targetKeywords = [inputVal];
-            if (searchDictionary[inputVal]) {
-                targetKeywords = searchDictionary[inputVal];
+            // Tentukan kata kunci pencarian yang akan digunakan
+            let searchKeywords = [rawKeyword];
+            if (dictionary[rawKeyword]) {
+                searchKeywords = searchKeywords.concat(dictionary[rawKeyword]);
             }
             
             cards.forEach(card => {
                 const title = card.getAttribute('data-title');
-                
-                // Game akan muncul jika judulnya mengandung kata kunci asli atau hasil terjemahan kamus
-                const isMatch = targetKeywords.some(keyword => title.includes(keyword));
+                // Cek apakah judul game mengandung kata ketik asli atau kata terjemahan kamus
+                const isMatch = searchKeywords.some(kw => title.includes(kw));
                 card.style.display = isMatch ? 'flex' : 'none';
             });
             updateGameCount();
+        }
+
+        // Fungsi Buka Game langsung di dalam website Rama (Taktik Poki)
+        function openGame(url, title) {
+            document.getElementById('overlayGameTitle').innerText = title;
+            document.getElementById('gameFrame').src = url;
+            document.getElementById('gameOverlay').style.display = 'flex';
+            document.body.style.overflow = 'hidden'; // Kunci scroll layar utama
+        }
+
+        // Fungsi Tutup Game
+        function closeGame() {
+            document.getElementById('gameOverlay').style.display = 'none';
+            document.getElementById('gameFrame').src = '';
+            document.body.style.overflow = 'auto'; // Aktifkan scroll kembali
         }
 
         function selectCategory(categoryName, element) {
