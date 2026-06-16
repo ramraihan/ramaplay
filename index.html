@@ -3,122 +3,142 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rama Play - Premium Grid Station</title>
+    <title>Rama Play - Premium Game Portal</title>
     <style>
         :root {
-            --bg-body: #0b0f19;
-            --bg-card: #151f32;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --border-color: #22314d;
-            --primary: #00a3e0;
-            --accent: #ff4757;
+            /* Mode Terang (Default bawaan: Biru Muda Cerah sesuai gambar) */
+            --bg-body: #e0f2fe; 
+            --bg-gradient: linear-gradient(145deg, #bae6fd 0%, #e0f2fe 100%);
+            --bg-card: rgba(255, 255, 255, 0.75);
+            --bg-card-hover: rgba(255, 255, 255, 0.95);
+            --text-main: #0369a1; 
+            --text-muted: #0284c7;
+            --border-color: rgba(56, 189, 248, 0.2);
+            --primary: #0284c7; 
+            --primary-glow: rgba(56, 189, 248, 0.4);
+            --glass-blur: blur(12px);
         }
 
-        [data-theme="light"] {
-            --bg-body: #f4f7f6;
-            --bg-card: #ffffff;
-            --text-main: #1a202c;
-            --text-muted: #718096;
-            --border-color: #edf2f7;
+        [data-theme="dark"] {
+            /* Mode Gelap (Ketika tombol diklik untuk beralih ke gelap) */
+            --bg-body: #0f172a;
+            --bg-gradient: linear-gradient(145deg, #020617 0%, #0f172a 100%);
+            --bg-card: rgba(30, 41, 59, 0.7);
+            --bg-card-hover: rgba(51, 65, 85, 0.9);
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --border-color: rgba(255, 255, 255, 0.06);
+            --primary: #38bdf8;
+            --primary-glow: rgba(56, 189, 248, 0.3);
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-family: 'Plus Jakarta Sans', 'Segoe UI', Roboto, sans-serif;
             -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            background-color: var(--bg-body);
+            background: var(--bg-gradient);
+            background-attachment: fixed;
             color: var(--text-main);
-            padding-bottom: 80px;
+            padding-bottom: 60px;
             min-height: 100vh;
-            transition: background-color 0.3s, color 0.3s;
+            transition: background 0.3s, color 0.3s;
         }
 
         .main-header {
-            background-color: var(--bg-card);
-            padding: 15px 25px;
+            background: var(--bg-card);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            padding: 20px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             border-bottom: 1px solid var(--border-color);
-            position: sticky;
-            top: 0;
+            position: relative;
             z-index: 100;
         }
 
         .header-logo {
-            font-size: 26px;
-            font-weight: 900;
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--text-main);
+            letter-spacing: -0.5px;
+        }
+
+        .header-logo span {
             color: var(--primary);
-            letter-spacing: 1px;
-            text-shadow: 0 0 10px rgba(0, 163, 224, 0.3);
+            text-shadow: 0 0 15px var(--primary-glow);
         }
 
         .theme-toggle-btn {
-            background: linear-gradient(135deg, var(--primary), #0077b6);
-            color: #ffffff;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 25px;
-            font-size: 14px;
-            font-weight: 700;
+            background: var(--bg-card);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            padding: 10px 22px;
+            border-radius: 100px;
+            font-size: 13px;
+            font-weight: 600;
             cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0, 163, 224, 0.3);
+            transition: all 0.2s ease;
+        }
+
+        .theme-toggle-btn:hover {
+            border-color: var(--primary);
+            box-shadow: 0 0 12px var(--primary-glow);
         }
 
         .container {
-            max-width: 1400px;
-            margin: 0 auto;
+            width: 100%;
+            max-width: 100%; 
             padding: 20px;
         }
 
         .search-container {
-            margin-bottom: 25px;
+            margin-bottom: 35px;
         }
 
         .search-input {
             width: 100%;
-            padding: 16px 22px;
-            border: 2px solid var(--border-color);
-            border-radius: 14px;
-            font-size: 16px;
-            font-weight: 600;
+            padding: 18px 25px;
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            font-size: 15px;
+            font-weight: 500;
             outline: none;
-            background-color: var(--bg-card);
+            background: var(--bg-card);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
             color: var(--text-main);
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: all 0.2s ease;
         }
 
         .search-input:focus {
             border-color: var(--primary);
-            box-shadow: 0 0 15px rgba(0, 163, 224, 0.2);
+            box-shadow: 0 0 20px var(--primary-glow);
         }
 
-        /* SUSUNAN MENU KATEGORI DI ATAS (PREMIUM BUTTONS) */
         .categories-nav-container {
-            margin-bottom: 30px;
-            padding: 5px 0;
+            margin-bottom: 35px;
         }
 
         .nav-title {
-            font-size: 16px;
-            font-weight: 800;
-            margin-bottom: 12px;
-            color: var(--primary);
-            letter-spacing: 0.5px;
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: var(--text-muted);
+            letter-spacing: 1px;
             text-transform: uppercase;
         }
 
         .categories-tabs {
             display: flex;
-            gap: 10px;
+            gap: 12px;
             overflow-x: auto;
-            padding-bottom: 10px;
+            padding-bottom: 12px;
             scrollbar-width: none;
         }
 
@@ -127,83 +147,62 @@
         }
 
         .tab-btn {
-            background-color: var(--bg-card);
+            background: var(--bg-card);
             color: var(--text-main);
             border: 1px solid var(--border-color);
             padding: 12px 24px;
-            border-radius: 12px;
-            font-size: 14px;
-            font-weight: 700;
+            border-radius: 14px;
+            font-size: 13px;
+            font-weight: 600;
             cursor: pointer;
             white-space: nowrap;
-            transition: all 0.2s ease;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .tab-btn.active, .tab-btn:hover {
-            background: linear-gradient(135deg, var(--primary), #0077b6);
+            background: var(--primary);
             color: #ffffff;
             border-color: var(--primary);
-            box-shadow: 0 4px 12px rgba(0, 163, 224, 0.25);
+            box-shadow: 0 8px 20px var(--primary-glow);
             transform: translateY(-2px);
         }
 
         .section-header-title {
-            font-size: 22px;
-            font-weight: 800;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            text-transform: capitalize;
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 25px;
+            letter-spacing: -0.5px;
         }
 
-        .section-header-title::before {
-            content: '';
-            display: inline-block;
-            width: 6px;
-            height: 24px;
-            background-color: var(--primary);
-            border-radius: 3px;
-        }
-
-        /* SUSUNAN STRUKTUR GRID TIGA KANAN BAWAH PAS DI HP */
         .games-grid-main {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 12px;
         }
 
-        @media (min-width: 768px) {
-            .games-grid-main {
-                grid-template-columns: repeat(4, 1fr);
-                gap: 16px;
-            }
-        }
-
-        @media (min-width: 1024px) {
-            .games-grid-main {
-                grid-template-columns: repeat(6, 1fr);
-                gap: 20px;
-            }
-        }
+        @media (min-width: 640px) { .games-grid-main { grid-template-columns: repeat(4, 1fr); gap: 14px; } }
+        @media (min-width: 1024px) { .games-grid-main { grid-template-columns: repeat(6, 1fr); gap: 16px; } }
+        @media (min-width: 1400px) { .games-grid-main { grid-template-columns: repeat(8, 1fr); gap: 18px; } }
+        @media (min-width: 1800px) { .games-grid-main { grid-template-columns: repeat(10, 1fr); gap: 20px; } }
 
         .game-card {
-            background-color: var(--bg-card);
-            border-radius: 16px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 18px;
             overflow: hidden;
-            padding: 8px;
+            padding: 10px;
             display: flex;
             flex-direction: column;
-            border: 1px solid var(--border-color);
             cursor: pointer;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.12);
-            transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 12px rgba(3, 105, 161, 0.05);
         }
 
         .game-card:hover {
-            transform: translateY(-5px);
+            background: var(--bg-card-hover);
+            transform: translateY(-6px) scale(1.02);
             border-color: var(--primary);
-            box-shadow: 0 8px 16px rgba(0, 163, 224, 0.2);
+            box-shadow: 0 12px 30px rgba(3, 105, 161, 0.15), 0 0 15px var(--primary-glow);
         }
 
         .img-box {
@@ -211,7 +210,7 @@
             aspect-ratio: 1/1;
             border-radius: 12px;
             overflow: hidden;
-            background: #1e293b;
+            background: #e2e8f0;
             position: relative;
         }
 
@@ -219,179 +218,250 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .game-card:hover .img-box img {
+            transform: scale(1.08);
         }
 
         .game-title {
-            font-size: 11px;
-            font-weight: 700;
-            margin-top: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 10px;
             text-align: center;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
             color: var(--text-main);
-            padding: 0 2px;
+            padding: 0 4px;
         }
 
         .status-text {
-            font-size: 14px;
-            font-weight: 700;
+            font-size: 13px;
+            font-weight: 500;
             color: var(--text-muted);
-            margin-bottom: 20px;
+            margin-bottom: 25px;
+        }
+
+        .load-more-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 40px;
+        }
+
+        .load-more-btn {
+            background: transparent;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+            padding: 14px 40px;
+            border-radius: 14px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .load-more-btn:hover {
+            background: var(--primary);
+            color: #ffffff;
+            box-shadow: 0 8px 25px var(--primary-glow);
+            transform: scale(1.02);
+        }
+
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--bg-card);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            z-index: 9999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.25s ease;
+        }
+
+        .back-to-top.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .back-to-top:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
         }
     </style>
 </head>
 <body>
 
     <div class="main-header">
-        <div class="header-logo">🎮 RAMA PLAY</div>
-        <button class="theme-toggle-btn" onclick="toggleTheme()" id="themeBtn">☀️ Terang</button>
+        <div class="header-logo">RAMA<span>PLAY</span></div>
+        <!-- PERBAIKAN: Mengganti teks awal tombol agar pas dengan nuansa biru muda cerah bawaan -->
+        <button class="theme-toggle-btn" onclick="toggleTheme()" id="themeBtn">🌙 Dark Mode</button>
     </div>
 
     <div class="container">
         
         <div class="search-container">
-            <input type="text" id="searchBar" class="search-input" placeholder="Cari game kesukaanmu di sini..." oninput="searchGamesEngine()">
+            <input type="text" id="searchBar" class="search-input" placeholder="Cari game favoritmu di sini..." oninput="searchGamesEngine()">
         </div>
 
         <div class="categories-nav-container">
-            <div class="nav-title">Pilih Kategori Game</div>
+            <div class="nav-title">Kategori Unggulan</div>
             <div class="categories-tabs" id="categoriesTabsContainer"></div>
         </div>
 
-        <div class="status-text" id="loadStatus">Menghubungkan ke jalur database murni...</div>
+        <div class="status-text" id="loadStatus">Sinkronisasi feed server GamePix...</div>
 
         <div class="section-header-title" id="currentSectionTitle">Semua Game</div>
         
         <div class="games-grid-main" id="gamesGridContainer"></div>
 
+        <div class="load-more-container">
+            <button class="load-more-btn" onclick="loadNextPageOfGames()" id="loadMoreBtn">Muat Game Lainnya</button>
+        </div>
+
     </div>
 
+    <button class="back-to-top" id="btnBackToTop" onclick="scrollToTop()">↑</button>
+
     <script>
-        // DATABASE RAKSASA YANG SUDAH DIVERIFIKASI DENGAN FORMULA ASLI RAMA (530+ BARIS)
-        const globalGamesDatabase = [
-            // --- MATCH-3 ---
-            { Title: "Prism Match 3D", CATEGORY: "match-3", URL: "https://play.gamepix.com/prism-match-3d/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/prism-match-3d/icon/prism-match-3d.png?w=105" },
-            { Title: "Merge Cakes", CATEGORY: "match-3", URL: "https://play.gamepix.com/merge-cakes/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/merge-cakes/icon/merge-cakes.png?w=105" },
-            { Title: "Jelly Collapse", CATEGORY: "match-3", URL: "https://play.gamepix.com/jelly-collapse/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/jelly-collapse/icon/jelly-collapse.png?w=105" },
-            { Title: "Match 3 Mania", CATEGORY: "match-3", URL: "https://play.gamepix.com/match-3-mania/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/match-3-mania/icon/match-3-mania.png?w=105" },
-            { Title: "Candy Riddles", CATEGORY: "match-3", URL: "https://play.gamepix.com/candy-riddles/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/candy-riddles/icon/candy-riddles.png?w=105" },
-            { Title: "Garden Tales", CATEGORY: "match-3", URL: "https://play.gamepix.com/garden-tales/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/garden-tales/icon/garden-tales.png?w=105" },
-            { Title: "Cookie Crush 3", CATEGORY: "match-3", URL: "https://play.gamepix.com/cookie-crush-3/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/cookie-crush-3/icon/cookie-crush-3.png?w=105" },
-            { Title: "Jewels Blitz 4", CATEGORY: "match-3", URL: "https://play.gamepix.com/jewels-blitz-4/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/jewels-blitz-4/icon/jewels-blitz-4.png?w=105" },
+        let globalGamesDatabase = [];
+        let currentPage = 1;
+        let selectedCategory = "semua";
+        const partnerSid = "1";
 
-            // --- ARCADE ---
-            { Title: "Swoop", CATEGORY: "arcade", URL: "https://play.gamepix.com/swoop/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/swoop/icon/swoop.png?w=105" },
-            { Title: "Neon Tower", CATEGORY: "arcade", URL: "https://play.gamepix.com/neon-tower/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/neon-tower/icon/neon-tower.png?w=105" },
-            { Title: "Pac-Xon", CATEGORY: "arcade", URL: "https://play.gamepix.com/pac-xon/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/pac-xon/icon/pac-xon.png?w=105" },
-            { Title: "Tap Tap Dash", CATEGORY: "arcade", URL: "https://play.gamepix.com/tap-tap-dash/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/tap-tap-dash/icon/tap-tap-dash.png?w=105" },
-            { Title: "Color Valley", CATEGORY: "arcade", URL: "https://play.gamepix.com/color-valley/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/color-valley/icon/color-valley.png?w=105" },
-            { Title: "Nut Rush", CATEGORY: "arcade", URL: "https://play.gamepix.com/nut-rush/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/nut-rush/icon/nut-rush.png?w=105" },
-            { Title: "Avoid Dying", CATEGORY: "arcade", URL: "https://play.gamepix.com/avoid-dying/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/avoid-dying/icon/avoid-dying.png?w=105" },
-            { Title: "Knife Rain", CATEGORY: "arcade", URL: "https://play.gamepix.com/knife-rain/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/knife-rain/icon/knife-rain.png?w=105" },
-            { Title: "Bubble Shooter", CATEGORY: "arcade", URL: "https://play.gamepix.com/bubble-shooter/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/bubble-shooter/icon/bubble-shooter.png?w=105" },
-            { Title: "Om Nom Run", CATEGORY: "arcade", URL: "https://play.gamepix.com/om-nom-run/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/om-nom-run/icon/om-nom-run.png?w=105" },
-
-            // --- ACTION ---
-            { Title: "Defend The Tank", CATEGORY: "action", URL: "https://play.gamepix.com/defend-the-tank/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/defend-the-tank/icon/defend-the-tank.png?w=105" },
-            { Title: "Knight 360", CATEGORY: "action", URL: "https://play.gamepix.com/knight-360/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/knight-360/icon/knight-360.png?w=105" },
-            { Title: "Sierras Flight", CATEGORY: "action", URL: "https://play.gamepix.com/sierras-flight/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/sierras-flight/icon/sierras-flight.png?w=105" },
-            { Title: "Stickman War", CATEGORY: "action", URL: "https://play.gamepix.com/stickman-war/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/stickman-war/icon/stickman-war.png?w=105" },
-            { Title: "Guns & Bottles", CATEGORY: "action", URL: "https://play.gamepix.com/guns-and-bottles/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/guns-and-bottles/icon/guns-and-bottles.png?w=105" },
-            { Title: "Jetpack Blast", CATEGORY: "action", URL: "https://play.gamepix.com/jetpack-blast/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/jetpack-blast/icon/jetpack-blast.png?w=105" },
-            { Title: "Zombies Can't Jump", CATEGORY: "action", URL: "https://play.gamepix.com/zombies-cant-jump/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/zombies-cant-jump/icon/zombies-cant-jump.png?w=105" },
-            { Title: "Martial Arts", CATEGORY: "action", URL: "https://play.gamepix.com/martial-arts/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/martial-arts/icon/martial-arts.png?w=105" },
-
-            // --- ADVENTURE ---
-            { Title: "Subway Stone", CATEGORY: "adventure", URL: "https://play.gamepix.com/subway-stone/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/subway-stone/icon/subway-stone.png?w=105" },
-            { Title: "Thief Companion", CATEGORY: "adventure", URL: "https://play.gamepix.com/thief-companion/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/thief-companion/icon/thief-companion.png?w=105" },
-            { Title: "Astro Run", CATEGORY: "adventure", URL: "https://play.gamepix.com/astro-run/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/astro-run/icon/astro-run.png?w=105" },
-            { Title: "Dino Run", CATEGORY: "adventure", URL: "https://play.gamepix.com/dino-run/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/dino-run/icon/dino-run.png?w=105" },
-            { Title: "Jungle Run", CATEGORY: "adventure", URL: "https://play.gamepix.com/jungle-run/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/jungle-run/icon/jungle-run.png?w=105" },
-            { Title: "Kiba and Kumba", CATEGORY: "adventure", URL: "https://play.gamepix.com/kiba-and-kumba-jungle-chaos/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/kiba-and-kumba-jungle-chaos/icon/kiba-and-kumba-jungle-chaos.png?w=105" },
-            { Title: "Sonic Path", CATEGORY: "adventure", URL: "https://play.gamepix.com/sonic-path-adventure/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/sonic-path-adventure/icon/sonic-path-adventure.png?w=105" },
-
-            // --- RACING ---
-            { Title: "Drift Cup Racing", CATEGORY: "racing", URL: "https://play.gamepix.com/drift-cup-racing/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/drift-cup-racing/icon/drift-cup-racing.png?w=105" },
-            { Title: "Desert Road", CATEGORY: "racing", URL: "https://play.gamepix.com/desert-road/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/desert-road/icon/desert-road.png?w=105" },
-            { Title: "Moto X3M Pool Party", CATEGORY: "racing", URL: "https://play.gamepix.com/moto-x3m-4-pool-party/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/moto-x3m-4-pool-party/icon/moto-x3m-4-pool-party.png?w=105" },
-            { Title: "Sprint Club Nitro", CATEGORY: "racing", URL: "https://play.gamepix.com/sprint-club-nitro/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/sprint-club-nitro/icon/sprint-club-nitro.png?w=105" },
-            { Title: "Grand Prix Hero", CATEGORY: "racing", URL: "https://play.gamepix.com/grand-prix-hero/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/grand-prix-hero/icon/grand-prix-hero.png?w=105" },
-            { Title: "Moto X3M Spooky Land", CATEGORY: "racing", URL: "https://play.gamepix.com/moto-x3m-6-spooky-land/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/moto-x3m-6-spooky-land/icon/moto-x3m-6-spooky-land.png?w=105" },
-            { Title: "GP Moto Racing", CATEGORY: "racing", URL: "https://play.gamepix.com/gp-moto-racing/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/gp-moto-racing/icon/gp-moto-racing.png?w=105" },
-
-            // --- SPORTS ---
-            { Title: "Foot Chinko", CATEGORY: "sports", URL: "https://play.gamepix.com/foot-chinko/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/foot-chinko/icon/foot-chinko.png?w=105" },
-            { Title: "Classic Bowling", CATEGORY: "sports", URL: "https://play.gamepix.com/classic-bowling/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/classic-bowling/icon/classic-bowling.png?w=105" },
-            { Title: "Basketball Stars", CATEGORY: "sports", URL: "https://play.gamepix.com/basketball-stars/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/basketball-stars/icon/basketball-stars.png?w=105" },
-            { Title: "Penalty Kick Wiz", CATEGORY: "sports", URL: "https://play.gamepix.com/penalty-kick-wiz/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/penalty-kick-wiz/icon/penalty-kick-wiz.png?w=105" },
-            { Title: "Street Shot", CATEGORY: "sports", URL: "https://play.gamepix.com/street-shot-basketball/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/street-shot-basketball/icon/street-shot-basketball.png?w=105" },
-            { Title: "Ultimate Boxing", CATEGORY: "sports", URL: "https://play.gamepix.com/ultimate-boxing/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/ultimate-boxing/icon/ultimate-boxing.png?w=105" },
-
-            // --- STRATEGY ---
-            { Title: "Slime Rush TD", CATEGORY: "strategy", URL: "https://play.gamepix.com/slime-rush-td/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/slime-rush-td/icon/slime-rush-td.png?w=105" },
-            { Title: "Ludo Legend", CATEGORY: "strategy", URL: "https://play.gamepix.com/ludo-legend/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/ludo-legend/icon/ludo-legend.png?w=105" },
-            { Title: "Kingdom Defense", CATEGORY: "strategy", URL: "https://play.gamepix.com/kingdom-defense/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/kingdom-defense/icon/kingdom-defense.png?w=105" },
-            { Title: "Tower Crush", CATEGORY: "strategy", URL: "https://play.gamepix.com/tower-crush/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/tower-crush/icon/tower-crush.png?w=105" },
-            { Title: "Merge Defense", CATEGORY: "strategy", URL: "https://play.gamepix.com/merge-defense/embed?sid=1AAA1", Icon: "https://img.gamepix.com/games/merge-defense/icon/merge-defense.png?w=105" }
+        const staticCategoriesList = [
+            "semua", "roblox", "arcade", "puzzle", "action", "adventure", "racing", "sports", "strategy", "kids"
         ];
 
-        let selectedCategory = "semua";
+        window.onscroll = function() {
+            const btn = document.getElementById("btnBackToTop");
+            if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+                btn.classList.add("show");
+            } else {
+                btn.classList.remove("show");
+            }
+        };
 
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
+        }
+
+        /* PERBAIKAN LOGIKA: Memastikan perpindahan teks tombol dan tema warna berjalan sinkron sempurna */
         function toggleTheme() {
             const currentTheme = document.documentElement.getAttribute('data-theme');
             const btn = document.getElementById('themeBtn');
-            if (currentTheme === 'light') {
+            if (currentTheme === 'dark') {
                 document.documentElement.removeAttribute('data-theme');
-                btn.innerHTML = '☀️ Terang';
-                localStorage.setItem('theme', 'dark');
-            } else {
-                document.documentElement.setAttribute('data-theme', 'light');
-                btn.innerHTML = '🌙 Gelap';
+                btn.innerHTML = '🌙 Dark Mode';
                 localStorage.setItem('theme', 'light');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                btn.innerHTML = '☀️ Light Mode';
+                localStorage.setItem('theme', 'dark');
             }
         }
 
-        if (localStorage.getItem('theme') === 'light') {
-            document.documentElement.setAttribute('data-theme', 'light');
-            document.getElementById('themeBtn').innerHTML = '🌙 Gelap';
+        if (localStorage.getItem('theme') === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            document.getElementById('themeBtn').innerHTML = '☀️ Light Mode';
+        } else {
+            document.getElementById('themeBtn').innerHTML = '🌙 Dark Mode';
         }
 
-        // MEMBUAT MENU TOMBOL KATEGORI DI ATAS HALAMAN
+        function shuffleArray(array) {
+            let cloned = [...array];
+            for (let i = cloned.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [cloned[i], cloned[j]] = [cloned[j], cloned[i]];
+            }
+            return cloned;
+        }
+
+        async function fetchGamesFromOfficialFeed(pageNumber = 1, appendData = false) {
+            try {
+                document.getElementById('loadStatus').innerText = `⏳ Memuat halaman data ${pageNumber}...`;
+                
+                const apiUrl = `https://feeds.gamepix.com/v2/json?order=quality&page=${pageNumber}&pagination=96&sid=${partnerSid}`;
+                
+                const response = await fetch(apiUrl);
+                if (!response.ok) throw new Error('Respon server GamePix bermasalah');
+                
+                const resData = await response.json();
+                
+                if (resData && resData.items) {
+                    if (appendData) {
+                        let combined = [...globalGamesDatabase, ...resData.items];
+                        globalGamesDatabase = Array.from(new Map(combined.map(item => [item.id, item])).values());
+                    } else {
+                        globalGamesDatabase = resData.items;
+                    }
+                    
+                    document.getElementById('loadStatus').innerText = `✨ Sinkronisasi berhasil. Terhubung dengan ${globalGamesDatabase.length} data game premium.`;
+                    buildCategoriesMenu();
+                    renderGamesGrid();
+                }
+            } catch (error) {
+                console.error(error);
+                document.getElementById('loadStatus').innerText = "Gagal memuat feed real-time. Beralih ke sistem penyimpanan lokal...";
+                if(!appendData) loadFallbackDatabase();
+            }
+        }
+
+        function loadNextPageOfGames() {
+            currentPage++;
+            fetchGamesFromOfficialFeed(currentPage, true);
+        }
+
         function buildCategoriesMenu() {
             const tabsContainer = document.getElementById('categoriesTabsContainer');
             tabsContainer.innerHTML = '';
 
-            const rawCategories = globalGamesDatabase.map(game => game.CATEGORY);
-            const cleanCategories = ["semua", ...new Set(rawCategories)];
-
-            cleanCategories.forEach(cat => {
+            staticCategoriesList.forEach(cat => {
                 const btn = document.createElement('button');
                 btn.className = `tab-btn ${selectedCategory === cat ? 'active' : ''}`;
                 
                 let label = cat.toUpperCase();
-                if(cat === "semua") label = "📱 SEMUA";
-                if(cat === "match-3") label = "🧩 MATCH-3";
-                if(cat === "arcade") label = "🕹️ ARCADE";
-                if(cat === "action") label = "⚔️ ACTION";
-                if(cat === "adventure") label = "🤠 ADVENTURE";
-                if(cat === "racing") label = "🏎️ RACING";
-                if(cat === "sports") label = "⚽ SPORTS";
-                if(cat === "strategy") label = "🧠 STRATEGY";
+                if(cat === "semua") label = "📱 Semua Game";
+                if(cat === "roblox") label = "🧱 Roblox Styles";
+                if(cat === "puzzle") label = "🧩 Puzzle";
+                if(cat === "arcade") label = "🕹️ Arcade";
+                if(cat === "action") label = "⚔️ Action";
+                if(cat === "adventure") label = "🤠 Adventure";
+                if(cat === "racing") label = "🏎️ Racing";
+                if(cat === "sports") label = "⚽ Sports";
+                if(cat === "strategy") label = "🧠 Strategy";
+                if(cat === "kids") label = "👶 Kids & Memasak";
 
                 btn.innerText = label;
                 btn.onclick = () => {
                     selectedCategory = cat;
                     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
                     btn.classList.add('active');
-                    document.getElementById('searchBar').value = ""; // Reset pencarian jika ganti kategori
+                    document.getElementById('searchBar').value = "";
                     renderGamesGrid();
                 };
                 tabsContainer.appendChild(btn);
             });
         }
 
-        // RENDER DAN FILTER GAME BERDASARKAN GRID 3-KOLOM
         function renderGamesGrid(gamesToDisplay = null) {
             const gridContainer = document.getElementById('gamesGridContainer');
             const sectionTitle = document.getElementById('currentSectionTitle');
@@ -401,58 +471,105 @@
             
             if (!targetGames) {
                 if (selectedCategory === "semua") {
-                    targetGames = globalGamesDatabase;
-                    sectionTitle.innerText = "Semua Game Premium";
+                    targetGames = shuffleArray(globalGamesDatabase);
+                    sectionTitle.innerText = `Menampilkan Semua Game Premium (${targetGames.length})`;
                 } else {
-                    targetGames = globalGamesDatabase.filter(game => game.CATEGORY === selectedCategory);
-                    sectionTitle.innerText = `Kategori: ${selectedCategory}`;
+                    let strictlyMatched = globalGamesDatabase.filter(game => {
+                        const gameCat = (game.category || "").toLowerCase();
+                        const gameTitle = (game.title || "").toLowerCase();
+                        const gameDesc = (game.description || "").toLowerCase();
+                        
+                        if (selectedCategory === "roblox") {
+                            return gameTitle.includes("roblox") || gameTitle.includes("craft") || 
+                                   gameTitle.includes("block") || gameTitle.includes("mine") || 
+                                   gameDesc.includes("roblox") || gameDesc.includes("pixel");
+                        }
+                        
+                        if (selectedCategory === "kids") {
+                            return gameCat.includes("kids") || gameCat.includes("girl") || 
+                                   gameTitle.includes("cook") || gameTitle.includes("cake") || 
+                                   gameTitle.includes("burger") || gameTitle.includes("kitchen");
+                        }
+                        return gameCat.includes(selectedCategory);
+                    });
+
+                    strictlyMatched = shuffleArray(strictlyMatched);
+
+                    let finalArr = [...strictlyMatched];
+                    if (finalArr.length < 32 && globalGamesDatabase.length > 32) {
+                        let backgroundPool = shuffleArray(globalGamesDatabase);
+                        for (let i = 0; i < backgroundPool.length; i++) {
+                            if (finalArr.length >= 32) break;
+                            if (!finalArr.some(g => g.id === backgroundPool[i].id)) {
+                                finalArr.push(backgroundPool[i]);
+                            }
+                        }
+                    }
+
+                    targetGames = finalArr;
+                    sectionTitle.innerText = `${selectedCategory.charAt(0).toUpperCase() + selectedCategory.slice(1)} (${strictlyMatched.length} Game Relevan)`;
                 }
             }
 
             if (targetGames.length === 0) {
-                gridContainer.innerHTML = `<div style="grid-column: span 3; text-align: center; color: var(--text-muted); padding: 40px; font-weight: bold;">Game tidak ditemukan...</div>`;
+                gridContainer.innerHTML = `<div style="grid-column: span 3; text-align: center; color: var(--text-muted); padding: 40px; font-weight: 500;">Game tidak ditemukan. Silakan muat ulang data atau periksa pencarian Anda.</div>`;
                 return;
             }
 
+            const uniqueMap = new Map();
             targetGames.forEach(game => {
+                if (!uniqueMap.has(game.id)) uniqueMap.set(game.id, game);
+            });
+
+            uniqueMap.forEach(game => {
                 const card = document.createElement('div');
                 card.className = 'game-card';
                 
+                const finalPlayUrl = game.url;
+                const finalIconUrl = game.image;
+
                 card.onclick = () => {
-                    window.location.href = game.URL;
+                    window.location.href = finalPlayUrl;
                 };
 
                 card.innerHTML = `
                     <div class="img-box">
-                        <img src="${game.Icon}" alt="${game.Title}" loading="lazy" onerror="this.onerror=null; this.src='https://img.gamepix.com/games/prism-match-3d/icon/prism-match-3d.png?w=105';">
+                        <img src="${finalIconUrl}" alt="${game.title}" loading="lazy" onerror="this.onerror=null; this.src='https://img.gamepix.com/games/prism-match-3d/icon/prism-match-3d.png';">
                     </div>
-                    <div class="game-title">${game.Title}</div>
+                    <div class="game-title">${game.title}</div>
                 `;
                 gridContainer.appendChild(card);
             });
-
-            document.getElementById('loadStatus').innerText = `Menampilkan ${targetGames.length} Game Premium dalam Susunan Grid`;
         }
 
-        // ENGINE PENCARIAN REALTIME DI DALAM GRID
         function searchGamesEngine() {
             const keyword = document.getElementById('searchBar').value.toLowerCase().trim();
             const sectionTitle = document.getElementById('currentSectionTitle');
 
             if (keyword === "") {
-                // Kembalikan ke filter kategori aktif jika kolom pencarian kosong
                 renderGamesGrid();
                 return;
             }
 
-            sectionTitle.innerText = `Hasil Pencarian: "${keyword}"`;
-            const matches = globalGamesDatabase.filter(game => game.Title.toLowerCase().includes(keyword));
+            const matches = globalGamesDatabase.filter(game => {
+                const t = game.title || "";
+                return t.toLowerCase().includes(keyword);
+            });
+
+            sectionTitle.innerText = `Hasil Pencarian: "${keyword}" (${matches.length} Ditemukan)`;
             renderGamesGrid(matches);
         }
 
-        // AKSI JALANKAN APLIKASI UTAMA
-        buildCategoriesMenu();
-        renderGamesGrid();
+        function loadFallbackDatabase() {
+            globalGamesDatabase = [
+                { id: "prism-match-3d", title: "Prism Match 3D", category: "puzzle", url: "https://play.gamepix.com/prism-match-3d/embed?sid=1", image: "https://img.gamepix.com/games/prism-match-3d/icon/prism-match-3d.png" },
+                { id: "merge-cakes", title: "Merge Cakes", category: "kids", url: "https://play.gamepix.com/merge-cakes/embed?sid=1", image: "https://img.gamepix.com/games/merge-cakes/icon/merge-cakes.png" }
+            ];
+            buildCategoriesMenu();
+            renderGamesGrid();
+        }
+
+        fetchGamesFromOfficialFeed(1, false);
     </script>
 
 </body>
